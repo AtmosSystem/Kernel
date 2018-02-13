@@ -4,7 +4,7 @@
 (defmacro defatmos-record-protocol
   [record-name type]
   (let [entity-lower-name# (lower-case record-name)
-        protocol-name# (symbol (str (name record-name) (name type)))
+        protocol-name# (symbol (str "I" (name record-name) (name type)))
         fn-name# #(list
                     (symbol (str (name %1) "-" entity-lower-name#))
                     '[value])]
