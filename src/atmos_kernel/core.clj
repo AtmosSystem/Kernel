@@ -35,6 +35,17 @@
   [data]
   (response data))
 
+(defn keyword-map
+  [data]
+  (into {} (map (fn [[k v]] [(keyword k) v]) data)))
+
+(defn request-body
+  [request]
+  (let [body (:body request)]
+    (keyword-map body)))
+
+
+
 ;-------------------------------------------------------
 ; END MICRO SERVICE FUNCTIONS
 ;-------------------------------------------------------
