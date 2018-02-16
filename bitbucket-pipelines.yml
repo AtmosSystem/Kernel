@@ -16,4 +16,4 @@ pipelines:
           - lein deps
           - lein clean
           - lein jar
-          - python ./build/s3_upload.py atmos-build-artefacts ./target/atmos-kernel*.jar atmos_kernel
+          - python ./build/s3_upload.py atmos-build-artefacts ./target/atmos-kernel*.jar atmos-kernel.jar
