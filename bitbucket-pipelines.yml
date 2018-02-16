@@ -6,9 +6,12 @@
 image: clojure:lein-2.7.1
 
 pipelines:
-  default:
+  branches:
+  master:
     - step:
         script: # Modify the commands below to build your repository.
+          - pip install boto3==1.3.0
           - lein deps
           - lein clean
           - lein jar
+          - python ./build/s3_upload.py atmos-build-artefacts ./target/atmos-kernel*.jar atmos_kernel
