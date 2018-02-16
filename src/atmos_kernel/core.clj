@@ -3,7 +3,25 @@
             [compojure.core :refer [GET]]
             [compojure.route :as route]
             [ring.util.response :refer [response]]
-            [ring.middleware.json :refer [wrap-json-response wrap-json-body]]))
+            [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
+            [clojure.edn :refer [read-string]]))
+
+;-------------------------------------------------------
+; BEGIN GENERAL FUNCTIONS
+;-------------------------------------------------------
+
+(defn keyword-map
+  [data]
+  (into {} (map (fn [[k v]] [(keyword k) v]) data)))
+
+(defn read-resource-edn
+  [file]
+  (read-string (slurp (str "resources/" (name file) ".edn"))))
+
+;-------------------------------------------------------
+; END GENERAL FUNCTIONS
+;-------------------------------------------------------
+
 
 ;-------------------------------------------------------
 ; BEGIN MICRO SERVICE FUNCTIONS
@@ -35,16 +53,12 @@
   [data]
   (response data))
 
-(defn keyword-map
-  [data]
-  (into {} (map (fn [[k v]] [(keyword k) v]) data)))
+
 
 (defn request-body
   [request]
   (let [body (:body request)]
     (keyword-map body)))
-
-
 
 ;-------------------------------------------------------
 ; END MICRO SERVICE FUNCTIONS
