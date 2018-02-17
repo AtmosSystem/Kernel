@@ -12,3 +12,4 @@ pipelines:
           - lein deps
           - lein clean
           - lein jar
+          - lein deploy releases
