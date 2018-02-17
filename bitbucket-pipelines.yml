@@ -9,12 +9,6 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
-          - apt-get update && apt-get install -y python-dev
-          - curl -O https://bootstrap.pypa.io/get-pip.py
-          - python get-pip.py
-          - pip install boto3==1.3.0
           - lein deps
           - lein clean
           - lein jar
-          - mv ./target/atmos-kernel*.jar /tmp/artifact.jar
-          - python ./build/codedeploy_deploy.py
