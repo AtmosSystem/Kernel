@@ -7,7 +7,8 @@
                  ;web-service-deps
                  [compojure "1.6.0"]
                  [ring/ring-json "0.4.0"]
-                 [ring/ring-jetty-adapter "1.6.3"]]
+                 [ring/ring-jetty-adapter "1.6.3"]
+                 [clj-http "3.7.0"]]
   :repositories [["releases" {:url           "https://clojars.org/repo"
                               :username      :env/CLOJAR_USERNAME
                               :password      :env/CLOJAR_PASSWORD
