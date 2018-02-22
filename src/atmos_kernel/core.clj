@@ -65,6 +65,17 @@
 ;-------------------------------------------------------
 
 
+(defmacro defatmos-seq-record-protocol
+  [record-name record-plural-name type]
+  (let [entity-name (name record-name)
+        protocol-name# (symbol (str "I" entity-name "Seq" (name type)))
+        fn-name# #(list
+                    (symbol (str (name %1) "-" (lower-case (name record-plural-name))))
+                    '[value])]
+    `(defprotocol ~protocol-name#
+       ~(fn-name# :get)
+       ~(fn-name# :remove))))
+
 (defmacro defatmos-record-protocols
   [record-name type]
   (let [entity-name (name record-name)
