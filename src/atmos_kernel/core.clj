@@ -53,12 +53,22 @@
   [data]
   (response data))
 
-
-
 (defn request-body
   [request]
   (let [body (:body request)]
     (keyword-map body)))
+
+
+(defmacro ms-atmos-cond-response
+  [& body]
+  `(ms-atmos-response
+     (cond
+       ~@body)))
+
+(defmacro ms-atmos-let-cond-response
+  [bindings & body]
+  `(let ~bindings
+     (ms-atmos-cond-response ~@body)))
 
 ;-------------------------------------------------------
 ; END MICRO SERVICE FUNCTIONS
