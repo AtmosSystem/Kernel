@@ -4,7 +4,7 @@
             [compojure.route :as route]
             [ring.util.response :refer [response]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
-            [clojure.edn :refer [read-string]]))
+            [aero.core :refer [read-config]]))
 
 ;-------------------------------------------------------
 ; BEGIN GENERAL FUNCTIONS
@@ -16,7 +16,7 @@
 
 (defn read-resource-edn
   [file]
-  (read-string (slurp (str "resources/" (name file) ".edn"))))
+  (read-config (str "resources/" (name file) ".edn")))
 
 ;-------------------------------------------------------
 ; END GENERAL FUNCTIONS
