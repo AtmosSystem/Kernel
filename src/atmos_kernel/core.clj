@@ -4,7 +4,8 @@
             [compojure.route :as route]
             [ring.util.response :refer [response]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
-            [aero.core :refer [read-config]]))
+            [clojure.edn :refer [read-string]]
+            [ring.middleware.cors :refer [wrap-cors]]))
 
 ;-------------------------------------------------------
 ; BEGIN GENERAL FUNCTIONS
@@ -42,7 +43,10 @@
 
 (defn make-json-app
   [routes]
-  (-> routes wrap-json-response wrap-json-body))
+  (let [routes (wrap-cors routes
+                          :access-control-allow-origin [#".*"]
+                          :access-control-allow-methods [:get :put :post :delete])]
+    (-> routes wrap-json-response wrap-json-body)))
 
 (defn ms-atmos-main-method-response
   [ms-name]

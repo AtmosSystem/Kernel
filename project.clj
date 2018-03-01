@@ -1,4 +1,4 @@
-(defproject atmos-kernel "0.1.0-SNAPSHOT"
+(defproject atmos-kernel "0.2.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -10,6 +10,7 @@
                  [compojure "1.6.0"]
                  [ring/ring-json "0.4.0"]
                  [ring/ring-jetty-adapter "1.6.3"]
+                 [ring-cors "0.1.11"]
                  ;logs-deps
                  [ch.qos.logback/logback-classic "1.2.3"]]
   :repositories [["releases" {:url           "https://clojars.org/repo"
