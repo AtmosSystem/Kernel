@@ -4,7 +4,7 @@
             [compojure.route :as route]
             [ring.util.response :refer [response]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
-            [clojure.edn :refer [read-string]]
+            [aero.core :refer [read-config]]
             [ring.middleware.cors :refer [wrap-cors]]))
 
 ;-------------------------------------------------------
