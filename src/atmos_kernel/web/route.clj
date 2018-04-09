@@ -1,6 +1,6 @@
-(ns atmos-kernel.web-route
+(ns atmos-kernel.web.route
   (:require [clojure.string :refer [lower-case join]]
-            [atmos-kernel.web :refer [atmos-response]]
+            [atmos-kernel.web.core :refer [atmos-response]]
             [compojure.core :refer [GET]]
             [compojure.route :refer [not-found]]))
 

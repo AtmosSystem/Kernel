@@ -1,5 +1,5 @@
-(ns atmos-kernel.web-response
-  (:require [atmos-kernel.web :refer [atmos-response]]))
+(ns atmos-kernel.web.response
+  (:require [atmos-kernel.web.core :refer [atmos-response]]))
 
 
 (defmacro atmos-cond-response
