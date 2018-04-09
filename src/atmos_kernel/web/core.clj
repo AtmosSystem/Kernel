@@ -1,4 +1,4 @@
-(ns atmos-kernel.web
+(ns atmos-kernel.web.core
   (:require [atmos-kernel.core :refer [keyword-map]]
             [ring.util.response :refer [response]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
