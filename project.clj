@@ -1,6 +1,6 @@
 (defproject atmos-kernel "0.3.0"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "Core of Atmos System"
+  :url "https://github.com/AtmosSystem/Kernel"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]

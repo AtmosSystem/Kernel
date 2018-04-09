@@ -1,14 +1,13 @@
-# kernel
+# Kernel
 
-A Clojure library designed to ... well, that part is up to you.
+This library is the core of atmos systems, it has commons functionality. 
 
-## Usage
+## Installation
 
-FIXME
+[atmos-kernel "0.3.0"]
 
 ## License
 
-Copyright © 2018 FIXME
+Copyright © 2018 Santiago de Pedro
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the Eclipse Public License either version 1.0 or any later version.
