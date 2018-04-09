@@ -6,11 +6,10 @@
 
 
 (def not-found-route (-> {} not-found atmos-response))
-(def not-implemented-route (let [data {:message "Not implemented method"}]
-                             (-> data not-found atmos-response)))
-
+(def not-implemented-route (let [data {:message "Not implemented method"}] (-> data not-found atmos-response)))
 
 (defn atmos-main-route
+  "Create the main route of web compojure application"
   ([ms-name system]
    (let [ms-name (-> ms-name name lower-case)]
      (GET "/" [] (str "Welcome to " system " " ms-name " micro-service"))))
@@ -18,6 +17,7 @@
    (atmos-main-route ms-name "atmos")))
 
 (defn atmos-route
+  "Create an atmos compojure route"
   [ms-name & params]
   (let [ms-name (-> ms-name name lower-case)
         params (join "/" params)]
