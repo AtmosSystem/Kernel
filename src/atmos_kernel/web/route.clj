@@ -1,7 +1,7 @@
 (ns atmos-kernel.web.route
   (:require [clojure.string :refer [lower-case join]]
             [atmos-kernel.web.core :refer [atmos-response]]
-            [compojure.core :refer [GET]]
+            [compojure.core :refer [GET POST PUT DELETE]]
             [compojure.route :refer [not-found]]))
 
 
@@ -18,6 +18,22 @@
                                         (str "/" route-path))))
         route-params (if (seq route-params) route-params 'request)]
     `(~http-method ~route-path ~route-params ~@body)))
+
+(defmacro defatmos-route
+  [http-method]
+  (let [fn-name (symbol (str "atmos-" http-method))
+        route-params '[ms-name route-path & body]]
+    `(defmacro ~fn-name
+       ~route-params
+       (atmos-route ~http-method
+                    ""
+                    (second ~route-params)
+                    (do (last ~route-params))))))
+
+(defatmos-route GET)
+(defatmos-route POST)
+(defatmos-route PUT)
+(defatmos-route DELETE)
 
 (defn atmos-main-route
   "Create the main route of web compojure application"
