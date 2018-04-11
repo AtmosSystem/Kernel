@@ -1,7 +1,6 @@
-(ns kernel.core-test
-  (:require [clojure.test :refer :all]
-            [kernel.core :refer :all]))
+(ns atmos-kernel.core-test
+  (:require [clojure.test :refer :all]))
 
 (deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+  (testing "Example test"
+    (is (= 1 1))))
