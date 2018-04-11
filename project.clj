@@ -3,6 +3,7 @@
   :url "https://github.com/AtmosSystem/Kernel"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
+  :plugins [[lein-cloverage "1.0.9"]]
   :dependencies [[org.clojure/clojure "1.8.0"]
                  ;configuration-deps
                  [aero "1.1.3"]
