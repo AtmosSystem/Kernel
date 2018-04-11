@@ -41,5 +41,8 @@ jobs:
       # run tests!
       - run: lein test
 
-      # Coveralls
-      - run: bash -ex test/coveralls.sh
+      # deploying to clojars
+      - run: lein clean
+      - run: lein jar
+      - run: lein deploy releases
+
