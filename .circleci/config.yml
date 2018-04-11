@@ -41,8 +41,37 @@ jobs:
       # run tests!
       - run: lein test
 
-      # deploying to clojars
-      - run: lein clean
-      - run: lein jar
-      - run: lein deploy releases
+  deploy:
+    docker:
+          # specify the version you desire here
+          - image: circleci/clojure:lein-2.7.1
 
+    working_directory: ~/repo
+
+    environment:
+      LEIN_ROOT: "true"
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+
+    steps:
+     - checkout
+
+     - run: lein deps
+
+     # deploying to clojars
+     - run: lein clean
+     - run: lein jar
+     - run: lein deploy releases
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
