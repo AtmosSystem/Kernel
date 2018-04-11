@@ -43,3 +43,7 @@ jobs:
 
       # Coveralls
       - run: bash -ex test/coveralls.sh
+
+    notify:
+      webhooks:
+        - url: https://coveralls.io/webhook?repo_token=$COVERALLS_REPO_TOKEN
