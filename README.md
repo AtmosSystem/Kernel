@@ -10,7 +10,7 @@ This library is the core of atmos systems, it has commons functionality.
 
 ## Installation
 ```
-[atmos-kernel "0.3.0"]
+[atmos-kernel "0.6.0"]
 ```
 
 ## License
