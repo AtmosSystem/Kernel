@@ -3,6 +3,7 @@
 
 # Kernel
 
+[![Clojars Project](https://img.shields.io/clojars/v/atmos-kernel.svg)](https://clojars.org/atmos-kernel)
 [![Dependencies Status](https://versions.deps.co/AtmosSystem/Kernel/status.svg)](https://versions.deps.co/AtmosSystem/Kernel)
 
 This library is the core of atmos systems, it has commons functionality. 
