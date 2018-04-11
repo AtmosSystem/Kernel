@@ -40,3 +40,6 @@ jobs:
         
       # run tests!
       - run: lein test
+
+      # Coveralls
+      - run: bash -ex test/coveralls.sh
