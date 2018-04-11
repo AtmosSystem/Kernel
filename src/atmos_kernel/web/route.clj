@@ -10,36 +10,37 @@
 
 (defmacro atmos-route
   "Create an atmos compojure route"
-  [http-method ms-name route-path & body]
+  [http-method ms-name route-path body]
   (let [ms-name (if-not (empty? ms-name) (-> ms-name name lower-case))
         route-params (vec (map #(symbol (name %)) (filter keyword? route-path)))
         route-path (let [route-path (join "/" route-path)]
                      (str "/" ms-name (if-not (empty? route-path)
                                         (str "/" route-path))))
         route-params (if (seq route-params) route-params 'request)]
-    `(~http-method ~route-path ~route-params ~@body)))
-
-(defmacro defatmos-route
-  [http-method]
-  (let [fn-name (symbol (str "atmos-" http-method))
-        route-params '[ms-name route-path & body]]
-    `(defmacro ~fn-name
+    `(~http-method ~route-path
        ~route-params
-       (atmos-route ~http-method
-                    ""
-                    (second ~route-params)
-                    (do (last ~route-params))))))
+       (atmos-response ~@body))))
 
-(defatmos-route GET)
-(defatmos-route POST)
-(defatmos-route PUT)
-(defatmos-route DELETE)
+(defmacro atmos-GET
+  [ms-name path body]
+  `(atmos-route GET ~ms-name ~path ~body))
+
+(defmacro atmos-POST
+  [ms-name path body]
+  `(atmos-route POST ~ms-name ~path ~body))
+
+(defmacro atmos-PUT
+  [ms-name path body]
+  `(atmos-route PUT ~ms-name ~path ~body))
+
+(defmacro atmos-DELETE
+  [ms-name path body]
+  `(atmos-route DELETE ~ms-name ~path ~body))
 
 (defn atmos-main-route
   "Create the main route of web compojure application"
   ([ms-name system]
    (let [ms-name (-> ms-name name lower-case)]
-     (atmos-route GET "" []
-                  (str "Welcome to " system " " ms-name " micro-service"))))
+     (atmos-GET "" [] (str "Welcome to " system " " ms-name " micro-service"))))
   ([ms-name]
    (atmos-main-route ms-name "atmos")))
