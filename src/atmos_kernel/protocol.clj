@@ -1,32 +1,51 @@
 (ns atmos-kernel.protocol
   (:require [clojure.string :refer [lower-case]]))
 
+(defn- protocol-name
+  "Create compound protocol name"
+  ([entity-name type]
+   (let [entity-name (name entity-name)
+         type (if-not (nil? type) (name type))]
+     (symbol (str "I" entity-name type "Protocol"))))
+  ([entity-name]
+   (protocol-name entity-name nil)))
+
+(defn- protocol-function
+  "Create protocol function name"
+  ([entity-name type]
+   (let [entity-name (lower-case (name entity-name))
+         type (name type)]
+     (list (symbol (str type "-" entity-name)) '[data])))
+  ([function-name]
+   (list (symbol function-name) '[data])))
+
 
 (defmacro defatmos-seq-record-protocol
   "Define a protocol for use in an ISeq implementation"
-  [record-name record-plural-name type]
-  (let [entity-name (name record-name)
-        protocol-name# (symbol (str "I" entity-name "Seq" (name type)))
-        fn-name# #(list
-                    (symbol (str (name %1) "-" (lower-case (name record-plural-name))))
-                    '[value])]
-    `(defprotocol ~protocol-name#
-       ~(fn-name# :get)
-       ~(fn-name# :remove))))
+  [record-name record-plural-name]
+  `(defprotocol ~(protocol-name record-name :Seq)
+
+     ~(protocol-function record-plural-name :get)
+     ~(protocol-function record-plural-name :remove)))
 
 (defmacro defatmos-record-protocols
   "Define multiple common protocols"
-  [record-name type]
-  (let [entity-name (name record-name)
-        entity-lower-name (lower-case entity-name)
-        protocol-name# #(symbol (str "I" entity-name (name %1) (name type)))
-        fn-name# #(list
-                    (symbol (str (name %1) "-" entity-lower-name))
-                    '[value])]
-    `[(defprotocol ~(protocol-name# :Basic)
-        ~(fn-name# :add)
-        ~(fn-name# :update))
+  [record-name]
+  `[(defprotocol ~(protocol-name record-name :Basic)
 
-      (defprotocol ~(protocol-name# :Identity)
-        ~(fn-name# :get)
-        ~(fn-name# :remove))]))
+      ~(protocol-function record-name :add)
+      ~(protocol-function record-name :update))
+
+    (defprotocol ~(protocol-name record-name :Identity)
+
+      ~(protocol-function record-name :get)
+      ~(protocol-function record-name :remove))])
+
+
+(defmacro defatmos-record-protocol
+  "Define record protocol"
+  [record-name function-names]
+  `(let [protocol-functions# (map protocol-function ~function-names)
+         protocol-named# (cons (protocol-name ~record-name) protocol-functions#)
+         protocol# (cons 'defprotocol protocol-named#)]
+     (eval protocol#)))
