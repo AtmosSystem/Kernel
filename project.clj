@@ -8,7 +8,7 @@
                  ;configuration-deps
                  [aero "1.1.3"]
                  ;web-service-deps
-                 [compojure "1.6.0"]
+                 [compojure "1.6.1"]
                  [ring/ring-json "0.4.0"]
                  [ring/ring-jetty-adapter "1.6.3"]
                  [ring-cors "0.1.12"]

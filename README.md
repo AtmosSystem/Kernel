@@ -9,8 +9,8 @@
 This library is the core of atmos systems, it has commons functionality. 
 
 ## Installation
-```
-[atmos-kernel "0.6.2"]
+```clojure
+[atmos-kernel "x.x.x"] ;See clojars version
 ```
 
 ## License
