@@ -22,19 +22,19 @@
         (atmos-response ~body)))))
 
 (defmacro atmos-GET
-  [ms-name path & body]
+  [ms-name path body]
   `(atmos-route GET ~ms-name ~path ~body))
 
 (defmacro atmos-POST
-  [ms-name path & body]
+  [ms-name path body]
   `(atmos-route POST ~ms-name ~path ~body))
 
 (defmacro atmos-PUT
-  [ms-name path & body]
+  [ms-name path body]
   `(atmos-route PUT ~ms-name ~path ~body))
 
 (defmacro atmos-DELETE
-  [ms-name path & body]
+  [ms-name path body]
   `(atmos-route DELETE ~ms-name ~path ~body))
 
 (defn atmos-main-route
