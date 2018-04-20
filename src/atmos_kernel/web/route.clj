@@ -35,7 +35,7 @@
   [path body]
   `(atmos-route DELETE ~path ~body))
 
-(defmacro atmos-main-route
+(defn atmos-main-route
   "Create the main route of web compojure application"
   ([ms-name system]
    (let [ms-name (-> ms-name name lower-case)]
