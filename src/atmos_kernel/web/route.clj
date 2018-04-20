@@ -20,33 +20,25 @@
         (atmos-response ~body)))))
 
 (defmacro atmos-GET
-  ([path body]
-   `(atmos-route GET ~path ~body))
-  ([body]
-   (atmos-GET [] body)))
+  [path body]
+  `(atmos-route GET ~path ~body))
 
 (defmacro atmos-POST
-  ([path body]
-   `(atmos-route POST ~path ~body))
-  ([body]
-   (atmos-POST [] body)))
+  [path body]
+  `(atmos-route POST ~path ~body))
 
 (defmacro atmos-PUT
-  ([path body]
-   `(atmos-route PUT ~path ~body))
-  ([body]
-   (atmos-PUT [] body)))
+  [path body]
+  `(atmos-route PUT ~path ~body))
 
 (defmacro atmos-DELETE
-  ([path body]
-   `(atmos-route DELETE ~path ~body))
-  ([body]
-   (atmos-DELETE [] body)))
+  [path body]
+  `(atmos-route DELETE ~path ~body))
 
-(defn atmos-main-route
+(defmacro atmos-main-route
   "Create the main route of web compojure application"
   ([ms-name system]
    (let [ms-name (-> ms-name name lower-case)]
-     (atmos-GET (str "Welcome to " system " " ms-name " micro-service"))))
+     `(atmos-GET [] (str "Welcome to " ~system " " ~ms-name " micro-service"))))
   ([ms-name]
    (atmos-main-route ms-name "atmos")))
