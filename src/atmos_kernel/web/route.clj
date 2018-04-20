@@ -1,7 +1,7 @@
 (ns atmos-kernel.web.route
   (:require [clojure.string :refer [lower-case join]]
             [atmos-kernel.web.core :refer [atmos-response]]
-            [compojure.core :refer [GET POST PUT DELETE]]
+            [compojure.core :refer [GET POST PUT DELETE defroutes]]
             [compojure.route :refer [not-found]]))
 
 
@@ -40,3 +40,12 @@
   ([ms-name]
    (let [ms-name (-> ms-name name lower-case)]
      `(atmos-GET [] (str "Welcome to " ~ms-name " micro-service")))))
+
+(defmacro defatmos-route
+  "Define atmos route"
+  [name ms-name & routes]
+  (let [route-name (symbol (str name "-internal"))]
+    `(def ~name (defroutes ~route-name
+                           (atmos-main-route ~ms-name)
+                           ~@routes
+                           not-found-route))))
