@@ -1,7 +1,7 @@
 (ns atmos-kernel.protocol
   (:require [clojure.string :refer [lower-case]]))
 
-(defn- protocol-name
+(defn protocol-name
   "Create compound protocol name"
   ([entity-name type]
    (let [entity-name (name entity-name)
@@ -10,7 +10,7 @@
   ([entity-name]
    (protocol-name entity-name nil)))
 
-(defn- protocol-function
+(defn protocol-function
   "Create protocol function name"
   ([entity-name type]
    (let [entity-name (lower-case (name entity-name))
