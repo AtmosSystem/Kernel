@@ -6,3 +6,9 @@
   (into {} (map (fn [[k v]] [(keyword k) (if (map? v)
                                            (keyword-map
                                              v) v)]) data)))
+
+
+(defn nil-or-empty?
+  "Check is the coll is nil or empty"
+  [coll]
+  (or (nil? coll) (empty? coll)))

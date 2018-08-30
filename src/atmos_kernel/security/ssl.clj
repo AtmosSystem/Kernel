@@ -3,10 +3,12 @@
   (:import (java.io File)))
 
 (defn- assoc-ssl-file
+  "Associate ssl file to hash-map"
   [ssl-data destination-file-name]
   (assoc ssl-data :file (copy-file (:file-path ssl-data) destination-file-name)))
 
 (defn defssl
+  "Define SSL properties on JVM"
   [ssl-data]
   (let [key-store (assoc-ssl-file (:key-store ssl-data) "key-store")
         trust-store (assoc-ssl-file (:trust-store ssl-data) "trust-store")
