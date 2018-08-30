@@ -7,7 +7,7 @@
 (defn copy-file
   "Copy content from source to destination using stream"
   [source destination]
-  (if-not (and (nil-or-empty? source) (nil-or-empty? destination))
+  (if (and (not (nil-or-empty? source)) (not (nil-or-empty? destination)))
     (let [destination-file (io/file destination)]
       (with-open [in-stream (io/input-stream source)
                   out-stream (io/output-stream destination-file)]
