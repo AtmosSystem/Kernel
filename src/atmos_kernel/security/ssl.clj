@@ -2,12 +2,14 @@
   (:require [atmos-kernel.io :refer [copy-file]])
   (:import (java.io File)))
 
-(defn- assoc-ssl-file [ssl-data] (assoc ssl-data :file (copy-file (:file-path ssl-data) (name ssl-data))))
+(defn- assoc-ssl-file
+  [ssl-data destination-file-name]
+  (assoc ssl-data :file (copy-file (:file-path ssl-data) destination-file-name)))
 
 (defn defssl
   [ssl-data]
-  (let [key-store (assoc-ssl-file (:key-store ssl-data))
-        trust-store (assoc-ssl-file (:trust-store ssl-data))
+  (let [key-store (assoc-ssl-file (:key-store ssl-data) "key-store")
+        trust-store (assoc-ssl-file (:trust-store ssl-data) "trust-store")
 
         key-store (assoc key-store
                     :path-property "javax.net.ssl.keyStore"
