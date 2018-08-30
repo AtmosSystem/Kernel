@@ -20,6 +20,6 @@
                       :path-property "javax.net.ssl.trustStore"
                       :password-property "javax.net.ssl.trustStorePassword")]
     (doseq [ssl-configuration [key-store trust-store]]
-      (do
+      (when (not (nil? (:file ssl-configuration)))
         (System/setProperty (:path-property ssl-configuration) (.getAbsolutePath (:file ssl-configuration)))
         (System/setProperty (:password-property ssl-configuration) (:password ssl-configuration))))))
