@@ -1,6 +1,5 @@
 (ns atmos-kernel.security.ssl
-  (:require [atmos-kernel.io :refer [copy-file]])
-  (:import (java.io File)))
+  (:require [atmos-kernel.io :refer [copy-file]]))
 
 (defn- assoc-ssl-file
   "Associate ssl file to hash-map"

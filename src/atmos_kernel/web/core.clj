@@ -2,7 +2,8 @@
   (:require [atmos-kernel.core :refer [keyword-map]]
             [ring.util.response :refer [response]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
-            [ring.middleware.cors :refer [wrap-cors]]))
+            [ring.middleware.cors :refer [wrap-cors]]
+            [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]))
 
 (defn- wrap-cors-response
   "Wrap routes in CORS"
@@ -23,5 +24,10 @@
 
 (defn json-web-app
   "Create a json web application"
-  [routes]
-  (-> routes wrap-cors-response wrap-json-response wrap-json-body))
+  [routes auth-backend]
+  (-> routes
+      (wrap-authentication auth-backend)
+      (wrap-authorization auth-backend)
+      wrap-cors-response
+      wrap-json-response
+      wrap-json-body))
