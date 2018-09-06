@@ -10,12 +10,6 @@
 (def not-found-route (-> {} not-found atmos-response))
 (def not-implemented-route (let [data {:message "Not implemented method"}] (-> data not-found atmos-response)))
 
-(defn authentication-handler
-  [request]
-  (if-not (atmos-authenticated? request)
-    (atmos-unauthorized)
-    true))
-
 
 (defmacro atmos-route
   "Create an atmos compojure route"
@@ -23,15 +17,15 @@
    (let [route-params (vec (map #(symbol (name %)) (filter keyword? route-path)))
          route-path (let [route-path (join "/" route-path)]
                       (str "/" (if-not (empty? route-path) route-path)))
-         route-params (if (seq route-params) route-params 'request)]
-     `(if ~authentication?
-        (if-let [authenticated?# (~http-method ~route-path ~'request authentication-handler)]
-          (~http-method ~route-path
-            ~route-params
-            (atmos-response ~body)))
-        (~http-method ~route-path
-          ~route-params
-          (atmos-response ~body))))))
+         route-params (if (seq route-params) (conj route-params :as 'request) 'request)]
+     `(~http-method ~route-path
+        ~route-params
+        (atmos-response
+          (if ~authentication?
+            (if-not (atmos-authenticated? 'request)
+              (atmos-unauthorized)
+              ~body)
+            ~body))))))
 
 (defmacro atmos-GET
   [path body & {:keys [authentication?]
