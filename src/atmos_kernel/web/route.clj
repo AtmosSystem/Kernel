@@ -1,6 +1,8 @@
 (ns atmos-kernel.web.route
   (:require [clojure.string :refer [lower-case join]]
             [atmos-kernel.web.core :refer [atmos-response]]
+            [atmos-kernel.web.security.auth :refer [atmos-authenticated?
+                                                    atmos-unauthorized]]
             [compojure.core :refer [GET POST PUT DELETE defroutes]]
             [compojure.route :refer [not-found]]))
 
@@ -10,30 +12,42 @@
 
 (defmacro atmos-route
   "Create an atmos compojure route"
-  ([http-method route-path body]
+  ([http-method authentication-required? route-path body]
    (let [route-params (vec (map #(symbol (name %)) (filter keyword? route-path)))
          route-path (let [route-path (join "/" route-path)]
                       (str "/" (if-not (empty? route-path) route-path)))
-         route-params (if (seq route-params) route-params 'request)]
+         route-params (if (seq route-params)
+                        (if authentication-required?
+                          (conj route-params 'request)
+                          route-params)
+                        'request)]
      `(~http-method ~route-path
         ~route-params
-        (atmos-response ~body)))))
+        (if authentication-required?
+          (if-not (atmos-authenticated? (last ~route-params))
+            (atmos-unauthorized)
+            (atmos-response ~body))
+          (atmos-response ~body))))))
 
 (defmacro atmos-GET
-  [path body]
-  `(atmos-route GET ~path ~body))
+  [path body & {:keys [authentication-required?]
+                :or   {authentication-required? false}}]
+  `(atmos-route GET authentication-required? ~path ~body))
 
 (defmacro atmos-POST
-  [path body]
-  `(atmos-route POST ~path ~body))
+  [path body & {:keys [authentication-required?]
+                :or   {authentication-required? false}}]
+  `(atmos-route POST authentication-required? ~path ~body))
 
 (defmacro atmos-PUT
-  [path body]
-  `(atmos-route PUT ~path ~body))
+  [path body & {:keys [authentication-required?]
+                :or   {authentication-required? false}}]
+  `(atmos-route PUT authentication-required? ~path ~body))
 
 (defmacro atmos-DELETE
-  [path body]
-  `(atmos-route DELETE ~path ~body))
+  [path body & {:keys [authentication-required?]
+                :or   {authentication-required? false}}]
+  `(atmos-route DELETE authentication-required? ~path ~body))
 
 (defmacro atmos-main-route
   "Create the main route of web compojure application"

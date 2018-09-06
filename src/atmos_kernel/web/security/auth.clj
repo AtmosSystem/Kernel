@@ -1,5 +1,6 @@
 (ns atmos-kernel.web.security.auth
   (:require [buddy.auth.backends :as backends]
+            [buddy.auth :refer [authenticated? throw-unauthorized]]
             [atmos-kernel.web.core :refer [atmos-response]]
             [cemerick.url :refer [url]]
             [clj-http.client :as http]
@@ -41,6 +42,9 @@
 (defn atmos-auth-backend
   [auth-backend data]
   (auth-backend data))
+
+(def atmos-authenticated? authenticated?)
+(def atmos-unauthorized throw-unauthorized)
 
 
 (defn default-token-auth-backend
