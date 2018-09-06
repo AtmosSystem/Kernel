@@ -1,7 +1,8 @@
 (ns atmos-kernel.web.route
   (:require [clojure.string :refer [lower-case join]]
             [atmos-kernel.web.core :refer [atmos-response]]
-            [buddy.auth :refer [authenticated? throw-unauthorized]]
+            [atmos-kernel.web.security.auth :refer [atmos-authenticated?
+                                                    atmos-unauthorized]]
             [compojure.core :refer [GET POST PUT DELETE defroutes]]
             [compojure.route :refer [not-found]]))
 
@@ -9,26 +10,25 @@
 (def not-found-route (-> {} not-found atmos-response))
 (def not-implemented-route (let [data {:message "Not implemented method"}] (-> data not-found atmos-response)))
 
+(defn- authentication-handler
+  [request]
+  (if-not (atmos-authenticated? request)
+    (atmos-unauthorized)
+    true))
+
+
 (defmacro atmos-route
   "Create an atmos compojure route"
   ([http-method authentication-required? route-path body]
    (let [route-params (vec (map #(symbol (name %)) (filter keyword? route-path)))
          route-path (let [route-path (join "/" route-path)]
                       (str "/" (if-not (empty? route-path) route-path)))
-         route-params (if (seq route-params)
-                        (if authentication-required?
-                          (conj route-params 'request)
-                          route-params)
-                        'request)]
-     `(~http-method ~route-path
-        ~route-params
+         route-params (if (seq route-params) route-params 'request)]
+     `(do
         (if ~authentication-required?
-          (if-not (authenticated? (last ~route-params))
-            (do
-              (println (authenticated? (last ~route-params)))
-              (println ~route-params)
-              (throw-unauthorized))
-            (atmos-response ~body))
+          (~http-method ~route-path ~'request authentication-handler))
+        (~http-method ~route-path
+          ~route-params
           (atmos-response ~body))))))
 
 (defmacro atmos-GET
