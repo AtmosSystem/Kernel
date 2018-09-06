@@ -32,22 +32,22 @@
 (defmacro atmos-GET
   [path body & {:keys [authentication-required?]
                 :or   {authentication-required? false}}]
-  `(atmos-route GET authentication-required? ~path ~body))
+  `(atmos-route GET ~authentication-required? ~path ~body))
 
 (defmacro atmos-POST
   [path body & {:keys [authentication-required?]
                 :or   {authentication-required? false}}]
-  `(atmos-route POST authentication-required? ~path ~body))
+  `(atmos-route POST ~authentication-required? ~path ~body))
 
 (defmacro atmos-PUT
   [path body & {:keys [authentication-required?]
                 :or   {authentication-required? false}}]
-  `(atmos-route PUT authentication-required? ~path ~body))
+  `(atmos-route PUT ~authentication-required? ~path ~body))
 
 (defmacro atmos-DELETE
   [path body & {:keys [authentication-required?]
                 :or   {authentication-required? false}}]
-  `(atmos-route DELETE authentication-required? ~path ~body))
+  `(atmos-route DELETE ~authentication-required? ~path ~body))
 
 (defmacro atmos-main-route
   "Create the main route of web compojure application"
