@@ -25,7 +25,7 @@
                       (str "/" (if-not (empty? route-path) route-path)))
          route-params (if (seq route-params) route-params 'request)]
      `(if ~authentication?
-        (if-let [authenticated? (~http-method ~route-path ~'request authentication-handler)]
+        (if-let [authenticated?# (~http-method ~route-path ~'request authentication-handler)]
           (~http-method ~route-path
             ~route-params
             (atmos-response ~body)))
