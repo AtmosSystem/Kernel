@@ -17,13 +17,13 @@
          route-path (let [route-path (join "/" route-path)]
                       (str "/" (if-not (empty? route-path) route-path)))
          route-params (if (seq route-params)
-                        (if authentication-required?
+                        (if ~authentication-required?
                           (conj route-params 'request)
                           route-params)
                         'request)]
      `(~http-method ~route-path
         ~route-params
-        (if authentication-required?
+        (if ~authentication-required?
           (if-not (atmos-authenticated? (last ~route-params))
             (atmos-unauthorized)
             (atmos-response ~body))
