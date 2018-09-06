@@ -1,8 +1,7 @@
 (ns atmos-kernel.web.route
   (:require [clojure.string :refer [lower-case join]]
             [atmos-kernel.web.core :refer [atmos-response]]
-            [atmos-kernel.web.security.auth :refer [atmos-authenticated?
-                                                    atmos-unauthorized]]
+            [buddy.auth :refer [authenticated? throw-unauthorized]]
             [compojure.core :refer [GET POST PUT DELETE defroutes]]
             [compojure.route :refer [not-found]]))
 
@@ -24,8 +23,11 @@
      `(~http-method ~route-path
         ~route-params
         (if ~authentication-required?
-          (if-not (atmos-authenticated? (last ~route-params))
-            (atmos-unauthorized)
+          (if-not (authenticated? (last ~route-params))
+            (do
+              (println (authenticated? (last ~route-params)))
+              (println ~route-params)
+              (throw-unauthorized))
             (atmos-response ~body))
           (atmos-response ~body))))))
 

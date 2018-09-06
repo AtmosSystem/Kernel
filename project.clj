@@ -1,4 +1,4 @@
-(defproject atmos-kernel "0.6.23"
+(defproject atmos-kernel "0.6.24-SNAPSHOT"
   :description "Core of Atmos System"
   :url "https://github.com/AtmosSystem/Kernel"
   :license {:name "Eclipse Public License"
