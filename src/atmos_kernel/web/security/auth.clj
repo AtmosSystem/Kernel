@@ -27,7 +27,7 @@
      (try
        (if-let [entity-token# (~tokens-provider-fn ~entity)]
          (if (= ~'token entity-token#) ~entity))
-       (catch Exception e false))))
+       (catch Exception e# false))))
 
 
 (defmacro defunauthorizedfn
