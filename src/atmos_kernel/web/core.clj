@@ -24,10 +24,12 @@
 
 (defn json-web-app
   "Create a json web application"
-  [routes auth-backend]
-  (-> routes
-      (wrap-authentication auth-backend)
-      (wrap-authorization auth-backend)
-      wrap-cors-response
-      wrap-json-response
-      wrap-json-body))
+  ([routes]
+   (json-web-app routes nil))
+  ([routes auth-backend]
+   (-> routes
+       (wrap-authentication auth-backend)
+       (wrap-authorization auth-backend)
+       wrap-cors-response
+       wrap-json-response
+       wrap-json-body)))

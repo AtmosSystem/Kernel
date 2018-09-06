@@ -5,8 +5,8 @@
             [clj-http.client :as http]
             [clojure.data.json :as json]))
 
-(def ^:private default-unauthorized-data {:message "Unauthorized"
-                                          :status  401})
+(def default-unauthorized-data {:message "Unauthorized"
+                                :status  401})
 
 ; TODO: Change to defmethod and create different defmulti
 (defn get-token
@@ -19,7 +19,7 @@
         data))))
 
 
-(defmacro defauthfn
+(defmacro defauthtokenfn
   [entity & {:keys [tokens-provider-fn]
              :or   {tokens-provider-fn get-token}}]
   `(defn ~'atmos-default-auth-fn
@@ -45,6 +45,6 @@
 
 (defn default-token-auth-backend
   [entity]
-  (atmos-auth-backend backends/token {:authfn               (defauthfn entity)
+  (atmos-auth-backend backends/token {:authfn               (defauthtokenfn entity)
                                       :unauthorized-handler (defunauthorizedfn default-unauthorized-data)}))
 
