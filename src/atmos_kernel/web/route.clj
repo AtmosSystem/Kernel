@@ -22,9 +22,11 @@
         ~route-params
         (atmos-response
           (if ~authentication?
-            (if-not (atmos-authenticated? 'request)
-              (atmos-unauthorized)
-              ~body)
+            (do
+              (println (last ~route-params))
+              (if-not (atmos-authenticated? (last ~route-params))
+                (atmos-unauthorized)
+                ~body))
             ~body))))))
 
 (defmacro atmos-GET
