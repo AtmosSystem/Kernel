@@ -21,7 +21,7 @@
         ~route-params
         (atmos-response
           (if ~authentication-needed?
-            (handler-request (if (vector? ~route-params) (last ~route-params) 'request) ~body)
+            (handler-request (if (vector? ~route-params) (last ~route-params) ~route-params) ~body)
             ~body))))))
 
 (defmacro atmos-GET

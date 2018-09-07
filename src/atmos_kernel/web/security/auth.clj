@@ -9,7 +9,8 @@
 (def jwe-auth backends/jwe)
 
 (defprotocol IAuthHandlerProtocol
-  (get-authentication [request auth-data]))
+  (get-authentication [request auth-data])
+  (get-authentication-type [routes]))
 
 (defmulti get-realm-name (fn [auth-backend] auth-backend))
 (defmethod get-realm-name :default [_] :ATMOS)
