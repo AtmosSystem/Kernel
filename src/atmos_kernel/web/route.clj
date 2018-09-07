@@ -20,7 +20,9 @@
      `(~http-method ~route-path
         ~route-params
         (atmos-response
-          (handler-request (last ~route-params) ~authentication-needed? ~body))))))
+          (if ~authentication-needed?
+            (handler-request (if (vector? ~route-params) (last ~route-params) 'request) ~body)
+            ~body))))))
 
 (defmacro atmos-GET
   [path body & {:keys [authentication-needed?]

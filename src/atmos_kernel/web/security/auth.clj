@@ -11,18 +11,23 @@
 (defprotocol IAuthHandlerProtocol
   (get-authentication [request auth-data]))
 
+(defmulti get-realm-name (fn [auth-backend] auth-backend))
+(defmethod get-realm-name :default [_] :ATMOS)
+
+(defmulti get-token-name (fn [auth-backend] auth-backend))
+(defmethod get-token-name :default [_] :Token)
+
 (defn atmos-auth-backend
   [auth-backend]
   (if auth-backend
-    (auth-backend {:realm  "ATMOS"
-                   :authfn (fn [request auth-data]
-                             (get-authentication request auth-data))})))
+    (auth-backend {:realm      (-> auth-backend get-realm-name name)
+                   :token-name (-> auth-backend get-token-name name)
+                   :authfn     (fn [request auth-data]
+                                 (get-authentication request auth-data))})))
 
 
 (defmacro handler-request
-  [request authentication-needed? body]
-  `(if ~authentication-needed?
-     (if-not (authenticated? ~request)
-       (throw-unauthorized)
-       ~body)
+  [request body]
+  `(if-not (authenticated? ~request)
+     (throw-unauthorized)
      ~body))
