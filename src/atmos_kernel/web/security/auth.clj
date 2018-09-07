@@ -1,54 +1,28 @@
 (ns atmos-kernel.web.security.auth
   (:require [buddy.auth.backends :as backends]
-            [buddy.auth :refer [authenticated? throw-unauthorized]]
-            [atmos-kernel.web.core :refer [atmos-response]]
-            [cemerick.url :refer [url]]
-            [clj-http.client :as http]
-            [clojure.data.json :as json]))
+            [buddy.auth :refer [authenticated? throw-unauthorized]]))
 
-(def default-unauthorized-data {:message "Unauthorized"
-                                :status  401})
+(def basic-auth backends/basic)
+(def session-auth backends/session)
+(def token-auth backends/token)
+(def jws-auth backends/jws)
+(def jwe-auth backends/jwe)
 
-; TODO: Change to defmethod and create different defmulti
-(defn get-token
-  [entity & {:keys [tokens-provider-uri]
-             :or   {tokens-provider-uri (System/getenv "ATMOS_KERNEL_TOKENS_PROVIDER_URI")}}]
-  (if-let [request-url (url tokens-provider-uri (name entity))]
-    (if-let [response (http/get request-url)]
-      (let [response-body (:body response)
-            data (json/read-str response-body :key-fn keyword)]
-        data))))
-
-
-(defmacro defauthtokenfn
-  [entity & {:keys [tokens-provider-fn]
-             :or   {tokens-provider-fn get-token}}]
-  `(defn ~'atmos-default-auth-fn
-     ~'[request token]
-     (try
-       (if-let [entity-token# (~tokens-provider-fn ~entity)]
-         (if (= ~'token entity-token#) ~entity))
-       (catch Exception e# false))))
-
-
-(defmacro defunauthorizedfn
-  [data]
-  `(defn ~'atmos-default-unauthorized-fn
-     ~'[request metadata]
-     (-> (atmos-response (:message ~data))
-         (assoc :status (:status ~data)))))
-
+(defprotocol IAuthHandlerProtocol
+  (get-authentication [request auth-data]))
 
 (defn atmos-auth-backend
-  [auth-backend data]
-  (auth-backend data))
+  [auth-backend]
+  (if auth-backend
+    (auth-backend {:realm  "ATMOS"
+                   :authfn (fn [request auth-data]
+                             (get-authentication request auth-data))})))
 
-(def atmos-authenticated? authenticated?)
-(def atmos-unauthorized throw-unauthorized)
 
-
-(defn default-token-auth-backend
-  [entity]
-  (atmos-auth-backend backends/token {:authfn               (defauthtokenfn entity)
-                                      :unauthorized-handler (defunauthorizedfn default-unauthorized-data)}))
-
+(defmacro handler-request
+  [request authentication-needed? body]
+  `(if ~authentication-needed?
+     (if-not (authenticated? ~request)
+       (throw-unauthorized)
+       ~body)
+     ~body))

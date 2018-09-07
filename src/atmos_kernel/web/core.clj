@@ -3,6 +3,7 @@
             [ring.util.response :refer [response]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [ring.middleware.cors :refer [wrap-cors]]
+            [atmos-kernel.web.security.auth :refer [atmos-auth-backend]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]))
 
 (defn- wrap-cors-response
@@ -28,8 +29,8 @@
    (json-web-app routes nil))
   ([routes auth-backend]
    (-> routes
-       (wrap-authentication auth-backend)
-       (wrap-authorization auth-backend)
+       (wrap-authentication (atmos-auth-backend auth-backend))
+       (wrap-authorization (atmos-auth-backend auth-backend))
        wrap-cors-response
        wrap-json-response
        wrap-json-body)))
