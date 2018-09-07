@@ -11,20 +11,11 @@
 (defprotocol IAuthHandlerProtocol
   (get-authentication [request auth-data]))
 
-
-(defmulti get-authentication-type (fn [entity] (keyword entity)))
-
-(defmulti get-realm-name (fn [auth-backend] auth-backend))
-(defmethod get-realm-name :default [_] :ATMOS)
-
-(defmulti get-token-name (fn [auth-backend] auth-backend))
-(defmethod get-token-name :default [_] :Token)
-
 (defn atmos-auth-backend
   [auth-backend]
   (if auth-backend
-    (auth-backend {:realm      (-> auth-backend get-realm-name name)
-                   :token-name (-> auth-backend get-token-name name)
+    (auth-backend {:realm      "ATMOS"
+                   :token-name "Bearer"
                    :authfn     (fn [request auth-data]
                                  (get-authentication request auth-data))})))
 
