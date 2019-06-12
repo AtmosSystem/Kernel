@@ -14,14 +14,15 @@
 (defn atmos-auth-backend
   [auth-backend]
   (if auth-backend
-    (auth-backend {:realm      "ATMOS"
-                   :token-name "Bearer"
-                   :authfn     (fn [request auth-data]
-                                 (get-authentication request auth-data))})))
+    (auth-backend {:realm  "ATMOS"
+                   :authfn (fn [request auth-data]
+                             (get-authentication request auth-data))})))
 
 
-(defmacro handler-request
-  [request body]
-  `(if-not (authenticated? ~request)
-     (throw-unauthorized)
+(defmacro handle-request
+  [request authentication-needed? body]
+  `(if ~authentication-needed?
+     (if-not (authenticated? ~request)
+       (throw-unauthorized)
+       ~body)
      ~body))
