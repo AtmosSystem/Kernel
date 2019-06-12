@@ -1,9 +1,8 @@
 (ns atmos-kernel.web.route
   (:require [clojure.string :refer [join]]
             [atmos-kernel.web.security.auth :refer [handle-request]]
-            [compojure.core :refer [GET POST PUT DELETE defroutes]]
+            [compojure.core :refer [GET POST PUT DELETE]]
             [compojure.route :refer [not-found]]))
-
 
 (def not-found-route not-found)
 (def not-implemented-route (let [data {:message "Not implemented method"}] (-> data not-found)))
