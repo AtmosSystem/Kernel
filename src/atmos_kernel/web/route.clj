@@ -7,18 +7,15 @@
 
 (def not-found-route not-found)
 (def not-implemented-route (let [data {:message "Not implemented method"}] (-> data not-found)))
-(def defatmos-routes defroutes)
 
 
 (defmacro atmos-route
   "Create an atmos compojure route"
   ([http-method authentication-needed? route-path params body]
    (let [route-path (join "/" route-path)
-         request-params (if (seq params) (conj params :as 'request))
-         request (if (vector? params) (last request-params) 'request)]
+         request (if (vector? params) (last (conj params :as 'request)) 'request)]
      `(~http-method ~route-path ~params
         (handle-request ~request ~authentication-needed? ~body)))))
-
 
 (defmacro atmos-GET
   [path params body & {:keys [authentication-needed?]
