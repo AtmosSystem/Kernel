@@ -19,7 +19,7 @@
                              (get-authentication request auth-data))})))
 
 
-(defmacro handler-request
+(defmacro handle-request
   [request authentication-needed? body]
   `(if ~authentication-needed?
      (if-not (authenticated? ~request)
