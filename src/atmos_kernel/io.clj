@@ -2,8 +2,6 @@
   (:require [atmos-kernel.core :refer [nil-or-empty?]]
             [clojure.java.io :as io]))
 
-
-
 (defn copy-file
   "Copy content from source to destination using stream"
   [source destination]
