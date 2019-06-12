@@ -11,7 +11,8 @@
 (defmacro atmos-route
   "Create an atmos compojure route"
   ([http-method authentication-needed? route-path params body]
-   (let [route-path (join "/" route-path)
+   (let [route-path (let [route-path (join "/" route-path)]
+                      (str "/" (if-not (empty? route-path) route-path)))
          request (if (vector? params) (last (conj params :as 'request)) 'request)]
      `(~http-method ~route-path ~params
         (handle-request ~request ~authentication-needed? ~body)))))
