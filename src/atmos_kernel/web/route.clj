@@ -6,8 +6,6 @@
             [compojure.route :refer [not-found]]))
 
 (def not-found-route (-> {} not-found atmos-response))
-(def not-implemented-route (let [data {:message "Not implemented method"}]
-                             (-> data not-found)))
 
 (defmacro atmos-route
   "Create an atmos compojure route"
