@@ -1,4 +1,4 @@
-(defproject atmos-kernel "0.6.38-SNAPSHOT"
+(defproject atmos-kernel "0.6.39-SNAPSHOT"
   :description "Core of Atmos System"
   :url "https://github.com/AtmosSystem/Kernel"
   :license {:name "Eclipse Public License"
@@ -11,6 +11,10 @@
                  [clj-http "3.10.0"]
                  [com.cemerick/url "0.1.1"]
                  [compojure "1.6.1"]
+                 ;ring
+                 [ring/ring-defaults "0.3.2"]
+                 [ring/ring-core "1.7.1"]
+                 [ring/ring-json "0.4.0"]
                  ;authorization-deps
                  [buddy/buddy-auth "2.1.0"]
                  ;logs-deps
