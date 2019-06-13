@@ -1,39 +1,44 @@
 (ns atmos-kernel.web.route
   (:require [clojure.string :refer [join]]
             [atmos-kernel.web.security.auth :refer [handle-request]]
+            [atmos-kernel.web.response :refer [atmos-response]]
             [compojure.core :refer [GET POST PUT DELETE]]
             [compojure.route :refer [not-found]]))
 
-(def not-found-route not-found)
-(def not-implemented-route (let [data {:message "Not implemented method"}] (-> data not-found)))
+(def not-found-route (-> {} not-found atmos-response))
+(def not-implemented-route (let [data {:message "Not implemented method"}]
+                             (-> data not-found)))
 
 
-(defmacro atmos-route
+
+(defn atmos-route
   "Create an atmos compojure route"
-  ([http-method authentication-needed? route-path params body]
+  ([http-method authentication-needed? route-path args body]
    (let [route-path (let [route-path (join "/" route-path)]
                       (str "/" (if-not (empty? route-path) route-path)))
-         request (if (vector? params) (last (conj params :as 'request)) 'request)]
-     `(~http-method ~route-path ~params
-        (handle-request ~request ~authentication-needed? ~body)))))
+         request (if (vector? args) (last (conj args :as 'request)) 'request)]
+
+     `(~http-method ~route-path ~args
+        (atmos-response
+          (handle-request ~request ~authentication-needed? ~body))))))
 
 (defmacro atmos-GET
-  [path params body & {:keys [authentication-needed?]
-                       :or   {authentication-needed? false}}]
-  `(atmos-route GET ~authentication-needed? ~path ~params ~body))
+  [path args body & {:keys [authentication-needed?]
+                     :or   {authentication-needed? false}}]
+  (atmos-route GET authentication-needed? path args body))
 
 (defmacro atmos-POST
-  [path params body & {:keys [authentication-needed?]
-                       :or   {authentication-needed? false}}]
-  `(atmos-route POST ~authentication-needed? ~path ~params ~body))
+  [path args body & {:keys [authentication-needed?]
+                     :or   {authentication-needed? false}}]
+  (atmos-route POST authentication-needed? path args body))
 
 (defmacro atmos-PUT
-  [path params body & {:keys [authentication-needed?]
-                       :or   {authentication-needed? false}}]
-  `(atmos-route PUT ~authentication-needed? ~path ~params ~body))
+  [path args body & {:keys [authentication-needed?]
+                     :or   {authentication-needed? false}}]
+  (atmos-route PUT authentication-needed? path args body))
 
 (defmacro atmos-DELETE
-  [path params body & {:keys [authentication-needed?]
-                       :or   {authentication-needed? false}}]
-  `(atmos-route DELETE ~authentication-needed? ~path ~params ~body))
+  [path args body & {:keys [authentication-needed?]
+                     :or   {authentication-needed? false}}]
+  (atmos-route DELETE authentication-needed? path args body))
 
