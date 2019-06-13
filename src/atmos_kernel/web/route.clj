@@ -6,13 +6,14 @@
             [compojure.route :refer [not-found]]))
 
 (def not-found-route (-> {} not-found atmos-response))
+(def ^:dynamic request)
 
 (defmacro atmos-route
   "Create an atmos compojure route"
   ([http-method authentication-needed? route-path args body]
    (let [route-path (let [route-path (join "/" route-path)]
                       (str "/" (if-not (empty? route-path) route-path)))
-         request (if (vector? args) (last (conj args :as 'request)) 'request)]
+         request (if (vector? args) (last (conj args :as request)) request)]
 
      `(~http-method ~route-path ~args
         (atmos-response
