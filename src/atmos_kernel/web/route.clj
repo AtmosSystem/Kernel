@@ -9,9 +9,7 @@
 (def not-implemented-route (let [data {:message "Not implemented method"}]
                              (-> data not-found)))
 
-
-
-(defn atmos-route
+(defmacro atmos-route
   "Create an atmos compojure route"
   ([http-method authentication-needed? route-path args body]
    (let [route-path (let [route-path (join "/" route-path)]
@@ -25,20 +23,20 @@
 (defmacro atmos-GET
   [path args body & {:keys [authentication-needed?]
                      :or   {authentication-needed? false}}]
-  (atmos-route GET authentication-needed? path args body))
+  `(atmos-route GET ~authentication-needed? ~path ~args ~body))
 
 (defmacro atmos-POST
   [path args body & {:keys [authentication-needed?]
                      :or   {authentication-needed? false}}]
-  (atmos-route POST authentication-needed? path args body))
+  `(atmos-route POST ~authentication-needed? ~path ~args ~body))
 
 (defmacro atmos-PUT
   [path args body & {:keys [authentication-needed?]
                      :or   {authentication-needed? false}}]
-  (atmos-route PUT authentication-needed? path args body))
+  `(atmos-route PUT ~authentication-needed? ~path ~args ~body))
 
 (defmacro atmos-DELETE
   [path args body & {:keys [authentication-needed?]
                      :or   {authentication-needed? false}}]
-  (atmos-route DELETE authentication-needed? path args body))
+  `(atmos-route DELETE ~authentication-needed? ~path ~args ~body))
 

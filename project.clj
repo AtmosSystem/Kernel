@@ -15,6 +15,7 @@
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-core "1.7.1"]
                  [ring/ring-json "0.4.0"]
+                 [ring/ring-codec "1.1.2"]
                  ;authorization-deps
                  [buddy/buddy-auth "2.1.0"]
                  ;logs-deps
