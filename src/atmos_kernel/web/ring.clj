@@ -1,6 +1,6 @@
 (ns atmos-kernel.web.ring
   (:require [atmos-kernel.web.security.auth :refer [atmos-auth-backend]]
-            [ring.middleware.json :refer [wrap-json-response wrap-json-params wrap-json-body]]
+            [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [ring.middleware.defaults :refer [wrap-defaults]]))
 
@@ -11,7 +11,6 @@
   (-> routes
       (wrap-authentication (atmos-auth-backend auth-backend))
       (wrap-authorization (atmos-auth-backend auth-backend))
-      (wrap-json-body {:keywords? true})
       wrap-json-response
       wrap-json-params
       (wrap-defaults options)))
