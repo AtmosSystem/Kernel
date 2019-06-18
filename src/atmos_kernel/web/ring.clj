@@ -5,8 +5,8 @@
             [ring.middleware.defaults :refer [wrap-defaults]]))
 
 
-(defn make-json-web-api*
-  "Create a JSON Web API"
+(defn wrap-secure-json-web-api
+  "Wrap a JSON Web API"
   [routes options auth-backend]
   (-> routes
       (wrap-authentication (atmos-auth-backend auth-backend))
@@ -17,6 +17,6 @@
 
 (defmacro def-json-web-api
   ([name routes options]
-   `(def ~name (make-json-web-api* ~routes ~options nil)))
+   `(def ~name (wrap-secure-json-web-api ~routes ~options nil)))
   ([name routes options auth-backend]
-   `(def ~name (make-json-web-api* ~routes ~options ~auth-backend))))
+   `(def ~name (wrap-secure-json-web-api ~routes ~options ~auth-backend))))

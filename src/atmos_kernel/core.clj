@@ -21,13 +21,5 @@
 
 (defn throw-exception
   "Throw an exception"
-  [message cause exception-type]
-  (throw (ex-info message {:cause cause :type exception-type})))
-
-
-(defn try-catch
-  [try-fn exception throw-fn]
-  (try
-    (try-fn)
-    (catch exception e
-      (throw-fn e))))
+  [message cause]
+  (throw (ex-info message {:cause cause})))
