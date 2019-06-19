@@ -12,3 +12,14 @@
   "Check is the coll is nil or empty"
   [coll]
   (or (nil? coll) (empty? coll)))
+
+
+(defn in?
+  "true if coll contains elm"
+  [coll elm]
+  (some #(= elm %) coll))
+
+(defn throw-exception
+  "Throw an exception"
+  [message cause]
+  (throw (ex-info message {:cause cause})))
