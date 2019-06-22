@@ -1,5 +1,11 @@
 (ns atmos-kernel.web.response
-  (:require [ring.util.response :refer [response bad-request]]))
+  (:require [ring.util.response :refer [response]]))
+
+(defn bad-request
+  [body]
+  {:status  400
+   :headers {}
+   :body    body})
 
 (def responses {:ok          response
                 :bad-request bad-request})
