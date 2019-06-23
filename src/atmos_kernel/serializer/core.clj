@@ -32,8 +32,9 @@
 
                                        data-structure (keys data-serialized)
                                        data (map (fn [field]
-                                                   (vector (response-name (data-serialized field))
-                                                           (field-value (data-serialized field))))
+                                                   (let [data (field data-serialized)]
+                                                     (vector (response-name data)
+                                                             (field-value data))))
                                                  data-structure)]
 
                                    (into {} data)))
@@ -62,7 +63,7 @@
 
 (extend-protocol FieldValueProtocol
   Map
-  (field-value [field] (:value field))
+  (field-value [data] data)
   SerializerField
   (field-value [field] (:value field))
   DeSerializerField
