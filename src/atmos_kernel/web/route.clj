@@ -7,7 +7,6 @@
   (:import (clojure.lang ExceptionInfo)))
 
 (def not-found-route (-> {} not-found atmos-response))
-(declare request)
 
 
 (defmacro atmos-route
@@ -15,7 +14,7 @@
   ([http-method authentication-needed? route-path args body]
    (let [route-path (let [route-path (join "/" route-path)]
                       (str "/" (if-not (empty? route-path) route-path)))
-         request (if (vector? args) (last (conj args :as request)) request)]
+         request (if (vector? args) (last (conj args :as 'request)) 'request)]
 
      `(~http-method ~route-path ~args
         (handle-request ~request ~authentication-needed?
@@ -51,6 +50,7 @@
 (defmacro atmos-main-route
   "Create the main route of web compojure application"
   ([ms-name]
-   (let [ms-name (-> ms-name name lower-case)]
-     `(atmos-GET [] request (str "Welcome to " ~ms-name " micro-service")))))
+   (let [ms-name (-> ms-name name lower-case)
+         request 'request]
+     `(atmos-GET [] ~request (str "Welcome to " ~ms-name " micro-service")))))
 
