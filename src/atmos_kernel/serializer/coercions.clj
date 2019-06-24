@@ -1,4 +1,4 @@
-(ns atmos-kernel.web.serializer.coercions
+(ns atmos-kernel.serializer.coercions
   (:require [atmos-kernel.core :refer [throw-exception]]
             [clojure.string :refer [includes? split]])
   (:import (java.util Date)
@@ -6,11 +6,35 @@
 
 
 (defn as-int
-  "Parse a string into an integer"
+  "Parse a string into an long"
   [data]
   (if-not (nil? data)
     (if-not (instance? Number data)
       (Long/parseLong data)
+      data)))
+
+(defn as-float
+  "Parse a string into an float"
+  [data]
+  (if-not (nil? data)
+    (if-not (instance? Float data)
+      (Float/parseFloat data)
+      data)))
+
+(defn as-double
+  "Parse a string into an double"
+  [data]
+  (if-not (nil? data)
+    (if-not (instance? Double data)
+      (Double/parseDouble data)
+      data)))
+
+(defn as-boolean
+  "Parse a string into an boolean"
+  [data]
+  (if-not (nil? data)
+    (if-not (instance? Boolean data)
+      (Boolean/parseBoolean data)
       data)))
 
 (defn as-date
@@ -34,7 +58,10 @@
 
 (def ^:private parsers {:number as-int
                         :date   as-date
-                        :time   as-time})
+                        :time   as-time
+                        :bool   as-boolean
+                        :double as-double
+                        :float  as-float})
 
 (defn parse-data
   [data class]
