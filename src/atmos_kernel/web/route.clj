@@ -2,11 +2,8 @@
   (:require [clojure.string :refer [join lower-case]]
             [atmos-kernel.web.security.auth :refer [handle-request]]
             [atmos-kernel.web.response :refer [atmos-response handle-exception]]
-            [compojure.core :refer [GET POST PUT DELETE]]
-            [compojure.route :refer [not-found]])
-  (:import (clojure.lang ExceptionInfo)))
+            [compojure.core :refer [GET POST PUT DELETE]]))
 
-(def not-found-route (-> {} not-found atmos-response))
 
 (defmacro atmos-route
   "Create an atmos compojure route"
@@ -24,7 +21,7 @@
                             (catch Exception e#
                               (handle-exception e# ~request))))
 
-          (catch ExceptionInfo ex#
+          (catch Exception ex#
             (handle-exception ex# ~request)))))))
 
 (defmacro atmos-GET

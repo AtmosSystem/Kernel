@@ -1,4 +1,4 @@
-(defproject atmos-kernel "0.6.56"
+(defproject atmos-kernel "0.7.0"
   :description "Core of Atmos System"
   :url "https://github.com/AtmosSystem/Kernel"
   :license {:name "Eclipse Public License"
@@ -16,6 +16,7 @@
                  [ring/ring-core "1.7.1"]
                  [ring/ring-json "0.4.0"]
                  [ring/ring-codec "1.1.2"]
+                 [ring-cors "0.1.12"]
                  ;authorization-deps
                  [buddy/buddy-auth "2.1.0"]
                  ;logs-deps

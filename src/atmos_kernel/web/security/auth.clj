@@ -1,6 +1,7 @@
 (ns atmos-kernel.web.security.auth
   (:require [buddy.auth.backends :as backends]
-            [buddy.auth :refer [authenticated? throw-unauthorized]]))
+            [buddy.auth :refer [authenticated? throw-unauthorized]]
+            [atmos-kernel.configuration :refer [read-edn]]))
 
 (def basic-auth backends/basic)
 (def session-auth backends/session)
@@ -8,7 +9,14 @@
 (def jws-auth backends/jws)
 (def jwe-auth backends/jwe)
 
-(defprotocol IAuthHandlerProtocol
+(def cors-config (read-edn :cors))
+
+(defmulti cors-access-control (fn [type-to-allow] type-to-allow))
+
+(defmethod cors-access-control :origins [_] (map #(re-pattern %) (cors-config :origins)))
+(defmethod cors-access-control :methods [_] (cors-config :methods))
+
+(defprotocol AuthHandlerProtocol
   (get-authentication [request auth-data]))
 
 (defn atmos-auth-backend

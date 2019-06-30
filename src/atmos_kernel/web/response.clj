@@ -1,7 +1,7 @@
 (ns atmos-kernel.web.response
   (:require [ring.util.response :refer [response]]))
 
-(defprotocol IExceptionHandlerProtocol
+(defprotocol ExceptionHandlerProtocol
   (handle-exception [exception request]))
 
 (defn bad-request
