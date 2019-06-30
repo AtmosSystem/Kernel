@@ -1,14 +1,24 @@
 (ns atmos-kernel.web.response
   (:require [ring.util.response :refer [response]]))
 
+(defprotocol IExceptionHandlerProtocol
+  (handle-exception [exception request]))
+
 (defn bad-request
   [body]
   {:status  400
    :headers {}
    :body    body})
 
-(def responses {:ok          response
-                :bad-request bad-request})
+(defn server-error-request
+  [body]
+  {:status  500
+   :headers {}
+   :body    body})
+
+(def responses {:ok           response
+                :bad-request  bad-request
+                :server-error server-error-request})
 
 (defn atmos-response
   "Create a atmos response"

@@ -1,13 +1,12 @@
 (ns atmos-kernel.web.route
   (:require [clojure.string :refer [join lower-case]]
             [atmos-kernel.web.security.auth :refer [handle-request]]
-            [atmos-kernel.web.response :refer [atmos-response]]
+            [atmos-kernel.web.response :refer [atmos-response handle-exception]]
             [compojure.core :refer [GET POST PUT DELETE]]
             [compojure.route :refer [not-found]])
   (:import (clojure.lang ExceptionInfo)))
 
 (def not-found-route (-> {} not-found atmos-response))
-
 
 (defmacro atmos-route
   "Create an atmos compojure route"
@@ -17,15 +16,16 @@
          request (if (vector? args) (last (conj args :as 'request)) 'request)]
 
      `(~http-method ~route-path ~args
-        (handle-request ~request ~authentication-needed?
-                        (try
-                          (atmos-response ~body)
+        (try
+          (handle-request ~request ~authentication-needed?
+                          (try
+                            (atmos-response ~body)
 
-                          (catch ExceptionInfo e#
-                            (let [data# {:message (.getMessage e#)
-                                         :data    (ex-data e#)}]
+                            (catch Exception e#
+                              (handle-exception e# ~request))))
 
-                              (atmos-response data# :bad-request)))))))))
+          (catch ExceptionInfo ex#
+            (handle-exception ex# ~request)))))))
 
 (defmacro atmos-GET
   [path args body & {:keys [authentication-needed?]
@@ -50,7 +50,6 @@
 (defmacro atmos-main-route
   "Create the main route of web compojure application"
   ([ms-name]
-   (let [ms-name (-> ms-name name lower-case)
-         request 'request]
-     `(atmos-GET [] ~request (str "Welcome to " ~ms-name " micro-service")))))
+   (let [ms-name (-> ms-name name lower-case)]
+     `(atmos-GET [] ~'request (str "Welcome to " ~ms-name " micro-service")))))
 
