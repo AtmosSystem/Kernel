@@ -1,7 +1,8 @@
 (ns atmos-kernel.web.security.auth
   (:require [buddy.auth.backends :as backends]
             [buddy.auth :refer [authenticated? throw-unauthorized]]
-            [atmos-kernel.configuration :refer [read-edn]]))
+            [atmos-kernel.configuration :refer [read-edn]]
+            [atmos-kernel.core :refer [log-data]]))
 
 (def basic-auth backends/basic)
 (def session-auth backends/session)
@@ -34,8 +35,10 @@
 
 (defmacro handle-request
   [request authentication-needed? body]
-  `(if ~authentication-needed?
-     (if-not (authenticated? ~request)
-       (throw-unauthorized)
-       ~body)
-     ~body))
+  `(log-data :atmos-kernel :debug {:request                ~request
+                                   :authentication-needed? ~authentication-needed?}
+             (if ~authentication-needed?
+               (if-not (authenticated? ~request)
+                 (throw-unauthorized)
+                 ~body)
+               ~body)))

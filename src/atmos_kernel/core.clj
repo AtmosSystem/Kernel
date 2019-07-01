@@ -27,8 +27,8 @@
 
 
 (defn log
-  [log-type log-data]
-  (let [logger (LoggerFactory/getLogger (str (ns-name *ns*)))
+  [logger-name log-type log-data]
+  (let [logger (LoggerFactory/getLogger (name logger-name))
         log-type (keyword log-type)
         log-data (str log-data)]
     (case log-type
@@ -38,3 +38,9 @@
       :warn (.warn logger log-data)
       :error (.error logger log-data)
       logger)))
+
+(defmacro log-data
+  [logger-name log-type data & body]
+  `(do
+     (log ~logger-name ~log-type ~data)
+     ~@body))
