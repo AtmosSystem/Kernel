@@ -19,12 +19,17 @@
 (defprotocol AuthHandlerProtocol
   (get-authentication [request auth-data]))
 
+(defn- auth-backend-fn
+  [request auth-data]
+  (get-authentication request auth-data))
+
 (defn atmos-auth-backend
   [auth-backend]
   (if auth-backend
-    (auth-backend {:realm  "ATMOS"
-                   :authfn (fn [request auth-data]
-                             (get-authentication request auth-data))})))
+    (let [auth-backend-data {:realm      "ATMOS"
+                             :token-name "Bearer"
+                             :authfn     auth-backend-fn}]
+      (auth-backend auth-backend-data))))
 
 
 (defmacro handle-request
