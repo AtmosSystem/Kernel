@@ -11,21 +11,22 @@
   ([http-method authentication-needed? route-path args body]
    (let [route-path (let [route-path (join "/" route-path)]
                       (str "/" (if-not (empty? route-path) route-path)))
-         request (if (vector? args) (last (conj args :as 'request)) 'request)]
+         args (if (vector? args) (conj args :as 'request) args)
+         request-obj (if (vector? args) (last args) 'request)]
 
      `(~http-method ~route-path ~args
         (try
-          (handle-request ~request ~authentication-needed?
+          (handle-request ~request-obj ~authentication-needed?
                           (try
                             (atmos-response ~body)
 
                             (catch Exception inner-exception#
                               (log-data :atmos-kernel :error inner-exception#
-                                        (handle-exception inner-exception# ~request)))))
+                                        (handle-exception inner-exception# ~request-obj)))))
 
           (catch Exception external-exception#
             (log-data :atmos-kernel :warn external-exception#
-                      (handle-exception external-exception# ~request))))))))
+                      (handle-exception external-exception# ~request-obj))))))))
 
 (defmacro atmos-GET
   [path args body & {:keys [authentication-needed?]
