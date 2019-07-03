@@ -5,7 +5,6 @@
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [ring.middleware.defaults :refer [wrap-defaults]]))
 
-
 (defn wrap-secure-json-web-api
   "Wrap a JSON Web API"
   [routes options auth-backend]
@@ -20,6 +19,6 @@
 
 (defmacro def-json-web-api
   ([name routes options]
-   `(def ~name (wrap-secure-json-web-api ~routes ~options nil)))
+   `(def-json-web-api ~name ~routes ~options nil))
   ([name routes options auth-backend]
    `(def ~name (wrap-secure-json-web-api ~routes ~options ~auth-backend))))

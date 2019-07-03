@@ -1,4 +1,5 @@
-(ns atmos-kernel.core)
+(ns atmos-kernel.core
+  (:import (org.slf4j LoggerFactory)))
 
 (defn keyword-map
   "Convert the keys of map (and subsequent maps) to clojure keyword"
@@ -23,3 +24,23 @@
   "Throw an exception"
   [message cause]
   (throw (ex-info message {:cause cause})))
+
+
+(defn log
+  [logger-name log-type log-data]
+  (let [logger (LoggerFactory/getLogger (name logger-name))
+        log-type (keyword log-type)
+        log-data (str log-data)]
+    (case log-type
+      :info (.info logger log-data)
+      :debug (.debug logger log-data)
+      :trace (.trace logger log-data)
+      :warn (.warn logger log-data)
+      :error (.error logger log-data)
+      logger)))
+
+(defmacro log-data
+  [logger-name log-type data & body]
+  `(do
+     (log ~logger-name ~log-type ~data)
+     ~@body))

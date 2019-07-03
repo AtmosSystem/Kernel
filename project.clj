@@ -1,4 +1,4 @@
-(defproject atmos-kernel "0.7.0"
+(defproject atmos-kernel "0.7.5"
   :description "Core of Atmos System"
   :url "https://github.com/AtmosSystem/Kernel"
   :license {:name "Eclipse Public License"
@@ -18,7 +18,7 @@
                  [ring/ring-codec "1.1.2"]
                  [ring-cors "0.1.12"]
                  ;authorization-deps
-                 [buddy/buddy-auth "2.1.0"]
+                 [buddy/buddy-auth "2.2.0"]
                  ;logs-deps
                  [ch.qos.logback/logback-classic "1.2.3"]]
   :repositories [["releases" {:url           "https://clojars.org/repo"
