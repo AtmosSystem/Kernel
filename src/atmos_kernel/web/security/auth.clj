@@ -2,7 +2,7 @@
   (:require [buddy.auth.backends :as backends]
             [buddy.auth :refer [authenticated? throw-unauthorized]]
             [atmos-kernel.configuration :refer [read-edn]]
-            [atmos-kernel.core :refer [log-data]]))
+            [clojure.tools.logging :as log]))
 
 (def basic-auth backends/basic)
 (def session-auth backends/session)
@@ -35,10 +35,10 @@
 
 (defmacro handle-request
   [request authentication-needed? body]
-  `(log-data :atmos-kernel :debug {:request                ~request
-                                   :authentication-needed? ~authentication-needed?}
-             (if ~authentication-needed?
-               (if-not (authenticated? ~request)
-                 (throw-unauthorized)
-                 ~body)
-               ~body)))
+  (log/debug {:request                request
+              :authentication-needed? authentication-needed?})
+  `(if ~authentication-needed?
+     (if-not (authenticated? ~request)
+       (throw-unauthorized)
+       ~body)
+     ~body))

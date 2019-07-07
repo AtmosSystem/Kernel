@@ -1,4 +1,4 @@
-(defproject atmos-kernel "0.7.5"
+(defproject atmos-kernel "1.0"
   :description "Core of Atmos System"
   :url "https://github.com/AtmosSystem/Kernel"
   :license {:name "Eclipse Public License"
@@ -20,6 +20,7 @@
                  ;authorization-deps
                  [buddy/buddy-auth "2.2.0"]
                  ;logs-deps
+                 [org.clojure/tools.logging "0.4.1"]
                  [ch.qos.logback/logback-classic "1.2.3"]]
   :repositories [["releases" {:url           "https://clojars.org/repo"
                               :username      :env/CLOJAR_USERNAME

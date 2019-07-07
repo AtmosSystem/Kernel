@@ -1,6 +1,6 @@
 (ns atmos-kernel.web.route
   (:require [clojure.string :refer [join lower-case]]
-            [atmos-kernel.core :refer [log-data]]
+            [clojure.tools.logging :as log]
             [atmos-kernel.web.security.auth :refer [handle-request]]
             [atmos-kernel.web.response :refer [atmos-response handle-exception]]
             [compojure.core :refer [GET POST PUT DELETE]]))
@@ -21,12 +21,12 @@
                             (atmos-response ~body)
 
                             (catch Exception inner-exception#
-                              (log-data :atmos-kernel :error inner-exception#
-                                        (handle-exception inner-exception# ~request-obj)))))
+                              (log/error :error inner-exception# "Exception occurred in the body of request")
+                              (handle-exception inner-exception# ~request-obj))))
 
           (catch Exception external-exception#
-            (log-data :atmos-kernel :warn external-exception#
-                      (handle-exception external-exception# ~request-obj))))))))
+            (log/warn external-exception# "Exception occurred trying handle request")
+            (handle-exception external-exception# ~request-obj)))))))
 
 (defmacro atmos-GET
   [path args body & {:keys [authentication-needed?]
