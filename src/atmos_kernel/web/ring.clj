@@ -3,7 +3,8 @@
             [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
             [ring.middleware.cors :refer [wrap-cors]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
-            [ring.middleware.defaults :refer [wrap-defaults]]))
+            [ring.middleware.defaults :refer [wrap-defaults]]
+            [clojure.tools.logging :refer [info]]))
 
 (defn wrap-secure-json-web-api
   "Wrap a JSON Web API"
@@ -21,4 +22,6 @@
   ([name routes options]
    `(def-json-web-api ~name ~routes ~options nil))
   ([name routes options auth-backend]
-   `(def ~name (wrap-secure-json-web-api ~routes ~options ~auth-backend))))
+   `(do
+      (info "Service started")
+      (def ~name (wrap-secure-json-web-api ~routes ~options ~auth-backend)))))

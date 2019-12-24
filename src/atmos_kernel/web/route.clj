@@ -3,7 +3,7 @@
             [clojure.tools.logging :as log]
             [atmos-kernel.web.security.auth :refer [handle-request]]
             [atmos-kernel.web.response :refer [atmos-response handle-exception]]
-            [compojure.core :refer [GET POST PUT DELETE]]))
+            [compojure.core :refer [defroutes GET POST PUT DELETE]]))
 
 
 (defmacro atmos-route
@@ -28,24 +28,27 @@
             (log/warn external-exception# "Exception occurred trying handle request")
             (handle-exception external-exception# ~request-obj)))))))
 
+(def default-authentication-needed? (Boolean/parseBoolean
+                                      (System/getProperty "atmos-kernel.web.route.authentication-needed" "true")))
+
 (defmacro atmos-GET
   [path args body & {:keys [authentication-needed?]
-                     :or   {authentication-needed? false}}]
+                     :or   {authentication-needed? default-authentication-needed?}}]
   `(atmos-route GET ~authentication-needed? ~path ~args ~body))
 
 (defmacro atmos-POST
   [path args body & {:keys [authentication-needed?]
-                     :or   {authentication-needed? false}}]
+                     :or   {authentication-needed? default-authentication-needed?}}]
   `(atmos-route POST ~authentication-needed? ~path ~args ~body))
 
 (defmacro atmos-PUT
   [path args body & {:keys [authentication-needed?]
-                     :or   {authentication-needed? false}}]
+                     :or   {authentication-needed? default-authentication-needed?}}]
   `(atmos-route PUT ~authentication-needed? ~path ~args ~body))
 
 (defmacro atmos-DELETE
   [path args body & {:keys [authentication-needed?]
-                     :or   {authentication-needed? false}}]
+                     :or   {authentication-needed? default-authentication-needed?}}]
   `(atmos-route DELETE ~authentication-needed? ~path ~args ~body))
 
 (defmacro atmos-main-route
@@ -53,4 +56,6 @@
   ([ms-name]
    (let [ms-name (-> ms-name name lower-case)]
      `(atmos-GET [] ~'request (str "Welcome to " ~ms-name " micro-service")))))
+
+(def #^{:macro true} defatmos-routes #'defroutes)
 
