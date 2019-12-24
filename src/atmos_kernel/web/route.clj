@@ -29,7 +29,8 @@
             (handle-exception external-exception# ~request-obj)))))))
 
 (def default-authentication-needed? (Boolean/parseBoolean
-                                      (System/getProperty "atmos-kernel.web.route.authentication-needed" "true")))
+                                      (System/getProperty "atmos-kernel.web.route.authentication" "true")))
+
 
 (defmacro atmos-GET
   [path args body & {:keys [authentication-needed?]
