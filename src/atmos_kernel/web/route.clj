@@ -56,7 +56,7 @@
   "Create the main route of web compojure application"
   ([ms-name]
    (let [ms-name (-> ms-name name lower-case)]
-     `(atmos-GET [] ~'request (str "Welcome to " ~ms-name " micro-service")))))
+     `(atmos-GET [] ~'request (str "Welcome to " ~ms-name " micro-service") :authentication-needed? false))))
 
 (def #^{:macro true} defatmos-routes #'defroutes)
 
