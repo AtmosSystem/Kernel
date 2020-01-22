@@ -22,5 +22,7 @@
 
 (defn throw-exception
   "Throw an exception"
-  [message data]
-  (throw (ex-info message {:data data})))
+  ([message data]
+   (throw (ex-info message data)))
+  ([message]
+   (throw (ex-info message {}))))
