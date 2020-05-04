@@ -3,7 +3,7 @@
             [clojure.java.io :as io]))
 
 (defn copy-file
-  "Copy content from source to destination using stream"
+  "Copy content from source to destination using stream."
   [source destination]
   (if (and (not (nil-or-empty? source)) (not (nil-or-empty? destination)))
     (let [destination-file (io/file destination)]
