@@ -10,7 +10,8 @@
     (read-config source)))
 
 (s/fdef read-resource
-        :args (s/and (s/cat :file :atmos-kernel.spec/non-blank-string :extension :atmos-kernel.spec/non-blank-string))
+        :args (s/cat :file :atmos-kernel.spec/non-blank-string
+                     :extension :atmos-kernel.spec/non-blank-string)
         :ret :atmos-kernel.spec/non-empty-map)
 
 (defn read-edn
