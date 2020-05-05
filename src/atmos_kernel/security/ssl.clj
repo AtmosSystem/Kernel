@@ -8,9 +8,8 @@
 (s/def ::key-store #(instance? KeyStore %))
 (s/def ::trust-store #(instance? KeyStore %))
 (s/def ::keystore-or-truststore (s/or :key ::key-store :trust ::trust-store))
-(s/def ::file-path :atmos-kernel.spec/non-blank-string)
 (s/def ::PEM-file map?)
-(s/def ::Certificate #(instance? Certificate %))
+(s/def ::certificate #(instance? Certificate %))
 
 (defn create-keystore
   "Create a Java KeyStore with(out) password."
@@ -22,8 +21,7 @@
 
 (s/fdef create-keystore
         :args (s/alt :without-password (s/cat)
-                     :with-password (s/or :password :atmos-kernel.spec/non-blank-string
-                                          :password nil?))
+                     :with-password (s/nilable :atmos-kernel.spec/non-blank-string))
         :ret ::key-store)
 
 
@@ -37,8 +35,7 @@
 
 (s/fdef create-truststore
         :args (s/alt :no-params (s/cat)
-                     :with-params (s/cat :password (s/or :with :atmos-kernel.spec/non-blank-string
-                                                         :without nil?)))
+                     :with-params (s/cat :password (s/nilable :atmos-kernel.spec/non-blank-string)))
         :ret ::trust-store)
 
 (defn save-keystore
@@ -51,8 +48,8 @@
 
 (s/fdef save-keystore
         :args (s/cat :store ::keystore-or-truststore
-                     :store-file-path ::file-path
-                     :password (s/? :atmos-kernel.spec/non-blank-string))
+                     :store-file-path :atmos-kernel.spec/file-path
+                     :password (s/nilable :atmos-kernel.spec/non-blank-string))
         :ret nil?)
 
 (defn read-key-pem-file
@@ -61,7 +58,7 @@
   (pem/read pem-file-path))
 
 (s/fdef read-key-pem-file
-        :args (s/cat :pem-file-path ::file-path)
+        :args (s/cat :pem-file-path :atmos-kernel.spec/file-path)
         :ret ::PEM-file)
 
 (defn read-certificate-pem-file
@@ -71,8 +68,8 @@
     (.generateCertificate certificate-factory (io/input-stream pem-file-path))))
 
 (s/fdef read-certificate-pem-file
-        :args (s/cat :pem-file-path ::file-path)
-        :ret ::Certificate)
+        :args (s/cat :pem-file-path :atmos-kernel.spec/file-path)
+        :ret ::certificate)
 
 (defn add-pem-client-key
   "Add client key to Java KeyStore."
@@ -93,9 +90,9 @@
 (s/fdef add-pem-client-key
         :args (s/cat :keystore ::key-store
                      :alias :atmos-kernel.spec/non-blank-string
-                     :client-pem-certificate ::file-path
+                     :client-pem-certificate :atmos-kernel.spec/file-path
                      :client-pem-key string?
-                     :password (s/? string?))
+                     :password (s/nilable string?))
         :ret ::key-store)
 
 (defn add-trust-certificate
@@ -110,5 +107,5 @@
 (s/fdef add-trust-certificate
         :args (s/cat :truststore ::trust-store
                      :alias :atmos-kernel.spec/non-blank-string
-                     :pem-certificate ::file-path)
+                     :pem-certificate :atmos-kernel.spec/file-path)
         :ret ::trust-store)

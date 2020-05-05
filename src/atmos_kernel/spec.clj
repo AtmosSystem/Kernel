@@ -7,3 +7,7 @@
 (s/def ::non-blank-string (s/and string? (complement str/blank?)))
 
 (s/def ::non-empty-map (s/and map? (complement empty?)))
+
+(s/def ::exception #(instance? Exception %))
+
+(s/def ::file-path :atmos-kernel.spec/non-blank-string)

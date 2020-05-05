@@ -6,7 +6,7 @@
 
 
 (defn as-int
-  "Parse a string into an long"
+  "Parse a string into an long."
   [data]
   (if-not (nil? data)
     (if-not (instance? Number data)
@@ -14,7 +14,7 @@
       data)))
 
 (defn as-float
-  "Parse a string into an float"
+  "Parse a string into an float."
   [data]
   (if-not (nil? data)
     (if-not (instance? Float data)
@@ -22,7 +22,7 @@
       data)))
 
 (defn as-double
-  "Parse a string into an double"
+  "Parse a string into an double."
   [data]
   (if-not (nil? data)
     (if-not (instance? Double data)
@@ -30,7 +30,7 @@
       data)))
 
 (defn as-boolean
-  "Parse a string into an boolean"
+  "Parse a string into an boolean."
   [data]
   (if-not (nil? data)
     (if-not (instance? Boolean data)
@@ -38,13 +38,13 @@
       data)))
 
 (defn as-date
-  "Parse a string into a date"
+  "Parse a string into a date."
   [data]
   (if-not (nil? data)
     (Date. (Date/parse data))))
 
 (defn as-time
-  "Parse a string into a time"
+  "Parse a string into a time."
   [data]
   (if (includes? data ":")
     (let [[hours minutes seconds] (split data #":")]
@@ -64,6 +64,7 @@
                         :float  as-float})
 
 (defn parse-data
+  "Parse data to a class using a existent parser."
   [data class]
   (let [parse-fn (parsers class)]
 
