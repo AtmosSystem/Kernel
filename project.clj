@@ -7,9 +7,7 @@
                  ;configuration-deps
                  [aero "1.1.6"]
                  ;pem
-                 [xsc/pem-reader "0.1.1"]
-                 ;logs-deps
-                 [org.clojure/tools.logging "0.4.1"]]
+                 [xsc/pem-reader "0.1.1"]]
   :repositories [["releases" {:url           "https://clojars.org/repo"
                               :username      :env/CLOJAR_USERNAME
                               :password      :env/CLOJAR_PASSWORD

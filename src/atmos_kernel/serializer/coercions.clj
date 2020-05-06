@@ -1,4 +1,5 @@
 (ns atmos-kernel.serializer.coercions
+  {:deprecated "2.0"}
   (:require [atmos-kernel.core :refer [throw-exception]]
             [clojure.string :refer [includes? split]])
   (:import (java.util Date)
