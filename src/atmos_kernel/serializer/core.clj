@@ -28,7 +28,7 @@
     (vector new-key
             (cond
               (or (keyword? serialized-data-key-or-with-spec) (fn? serialized-data-key-or-with-spec))
-              (serialized-data-key-or-with-spec data-map)   ; Return the value from data map.
+              (serialized-data-key-or-with-spec data-map)   ; Return the value from data map applying the transform fn or using keyword.
 
               (map? serialized-data-key-or-with-spec)
               (let [[serialized-data-key data-spec] (-> serialized-data-key-or-with-spec vec first) ; Getting the data map key and spec.
