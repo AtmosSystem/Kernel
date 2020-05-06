@@ -1,6 +1,5 @@
 (ns atmos-kernel.serializer.core
-  (:require [atmos-kernel.serializer.coercions :refer :all]
-            [atmos-kernel.core :refer [in? throw-exception]]
+  (:require [atmos-kernel.core :refer [in? throw-exception]]
             [clojure.spec.alpha :as s])
   (:import (java.util List Map)))
 
@@ -52,9 +51,6 @@
                      :new-keys-map (s/map-of keyword? (s/or :new-key-name keyword?
                                                             :new-key-name-with-spec (s/map-of keyword? fn?))))
         :ret (s/tuple keyword? any?))
-
-
-
 
 (defprotocol EntitySerializationProtocol
   (serialize [data serializer-map] "Serialize data map using serializer map.")
