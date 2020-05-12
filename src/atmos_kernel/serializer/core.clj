@@ -1,108 +1,68 @@
 (ns atmos-kernel.serializer.core
-  (:require [atmos-kernel.serializer.coercions :refer :all]
-            [atmos-kernel.core :refer [in?]])
+  (:require [atmos-kernel.core :refer [in? throw-exception]]
+            [clojure.spec.alpha :as s])
   (:import (java.util List Map)))
 
-
-(defrecord SerializerField [value response-name-value])
-(defrecord DeSerializerField [value class options])
-
-(defprotocol FieldValueProtocol
-  (field-value [field]))
-
-(defprotocol FieldSerializationProtocol
-  (response-name [field]))
-
-(defprotocol FieldDeSerializationProtocol
-  (has-option? [this option])
-  (parse [this]))
-
 (defprotocol EntitySerializationProtocol
-  (serialize [data serializer-fn])
-  (de-serialize [data de-serialize-fn]))
+  (serialize [data serializer-map] "Serialize data map using serializer map.")
+  (de-serialize [data de-serialize-map] "De-serialize data map using a de-serializer map."))
+
+(defn vectorize-map*
+  "Create a vector from a data map using new keys map field."
+  [data-map field]
+  (let [[new-key no-serialized-data-key-or-fn] field]
+    (vector new-key
+            (if (or (keyword? no-serialized-data-key-or-fn) (fn? no-serialized-data-key-or-fn))
+              (no-serialized-data-key-or-fn data-map)))))   ; Vectorize the new key with the value of data map.
+
+(s/fdef vectorize-map*
+        :args (s/cat :data-map (s/map-of keyword? any?)
+                     :field (s/tuple keyword? (s/or :no-serialized-data-key keyword?
+                                                    :transform-fn fn?)))
+        :ret (s/tuple keyword? any?))
+
+(defn de-vectorize-map*
+  "Create a vector from a data map using new keys map field."
+  [data-map field]
+  (let [[new-key serialized-data-key-or-with-spec] field]
+    (vector new-key
+            (cond
+              (or (keyword? serialized-data-key-or-with-spec) (fn? serialized-data-key-or-with-spec))
+              (serialized-data-key-or-with-spec data-map)   ; Return the value from data map applying the transform fn or using keyword.
+
+              (map? serialized-data-key-or-with-spec)
+              (let [[serialized-data-key data-spec] (-> serialized-data-key-or-with-spec vec first) ; Getting the data map key and spec.
+                    data-map-value (serialized-data-key data-map)]
+
+                (if (s/valid? data-spec data-map-value)     ; Applying the spec against the value.
+                  data-map-value                            ; If validation was success, return the data map value.
+                  (throw-exception (s/explain-str data-spec data-map-value)
+                                   {:key serialized-data-key})))))) ; Throw an exception when the spec is not valid.
+
+  (s/fdef de-vectorize-map*
+          :args (s/cat :data-map (s/map-of keyword? any?)
+                       :field (s/tuple keyword? (s/or :serialized-data-key keyword?
+                                                      :transform-fn fn?
+                                                      :serialized-data-key-with-spec (s/map-of keyword? fn?))))
+          :ret (s/tuple keyword? any?)))
 
 (extend-protocol EntitySerializationProtocol
   nil
   (serialize [_ _] nil)
   (de-serialize [_ _] nil)
   Map
-  (serialize [data serialize-fn] (let [data-serialized (if-not (nil? serialize-fn)
-                                                         (serialize-fn data)
-                                                         data)
+  (serialize [data serializer-map] (let [data (map (fn [field] (vectorize-map* data field)) serializer-map)]
+                                     (into {} data)))
 
-                                       data-structure (keys data-serialized)
-                                       data (map (fn [field]
-                                                   (let [data (field data-serialized)]
-                                                     (vector (response-name data)
-                                                             (field-value data))))
-                                                 data-structure)]
+  (de-serialize [data de-serializer-map] (let [{:keys [data-spec fields] :or {data-spec false}} de-serializer-map
+                                               result-data (map (fn [field] (de-vectorize-map* data field)) fields)
+                                               result-data-map (into {} result-data)]
 
-                                   (into {} data)))
-
-  (de-serialize [data de-serialize-fn] (let [data-de-serialized (if-not (nil? de-serialize-fn)
-                                                                  (de-serialize-fn data)
-                                                                  data)
-
-                                             data-structure (keys data-de-serialized)
-                                             data (map (fn [field]
-                                                         (let [data (field data-de-serialized)]
-                                                           (vector field (if (record? data)
-                                                                           (parse data)
-                                                                           (de-serialize data nil)))))
-                                                       data-structure)]
-
-                                         (into {} data)))
-
+                                           (if data-spec
+                                             (if (s/valid? data-spec data)
+                                               result-data-map
+                                               (throw-exception (s/explain-str data-spec data)))
+                                             result-data-map)))
   List
-  (serialize [data serialize-fn] (map (fn [record]
-                                        (serialize record serialize-fn)) data))
-
-  (de-serialize [data de-serialize-fn] (map (fn [record]
-                                              (de-serialize record de-serialize-fn)) data)))
-
-
-(extend-protocol FieldValueProtocol
-  Map
-  (field-value [data] data)
-  SerializerField
-  (field-value [field] (:value field))
-  DeSerializerField
-  (field-value [field] (:value field)))
-
-(extend-protocol FieldSerializationProtocol
-  Map
-  (response-name [field] (:response-name-value field))
-  SerializerField
-  (response-name [field] (:response-name-value field)))
-
-(extend-protocol FieldDeSerializationProtocol
-  DeSerializerField
-  (parse [field] (parse-data (:value field) (:class field)))
-  (has-option? [field option] (in? (:options field) option))
-  nil
-  (parse [_] nil))
-
-(defn serializer-field
-  [value response-name]
-  (->SerializerField value (keyword response-name)))
-
-(defn de-serializer-field
-  ([value class options]
-   (->DeSerializerField value class options))
-  ([value class]
-   (de-serializer-field value class [:required]))
-  ([value]
-   (de-serializer-field value :string)))
-
-
-(defn make-fields
-  [record make-field-fn fields]
-  (apply record (map
-                  (fn
-                    [field]
-                    (let [property (first field)
-                          property-metadata (second field)]
-                      (make-field-fn property property-metadata)))
-                  fields)))
-
-(defn mapping [record] (into {} record))
+  (serialize [data serializer-map] (map (fn [record] (serialize record serializer-map)) data))
+  (de-serialize [data de-serializer-map] (map (fn [record] (de-serialize record de-serializer-map)) data)))
