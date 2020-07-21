@@ -1,5 +1,6 @@
 (ns atmos-kernel.core
-  (:require [clojure.spec.alpha :as s]))
+  (:require [clojure.spec.alpha :as s]
+            [atmos-kernel.spec :refer [:atmos-kernel.spec/exception]]))
 
 (defn keyword-map
   "Convert the keys of map (and subsequent maps) to clojure keyword."

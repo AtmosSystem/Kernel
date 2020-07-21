@@ -10,4 +10,4 @@
 
 (s/def ::exception #(instance? Exception %))
 
-(s/def ::file-path :atmos-kernel.spec/non-blank-string)
+(s/def ::file-path [:atmos-kernel.spec/non-blank-string])
