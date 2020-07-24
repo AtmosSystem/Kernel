@@ -1,7 +1,8 @@
 (ns atmos-kernel.security.ssl
   (:require [pem-reader.core :as pem]
             [clojure.java.io :as io]
-            [clojure.spec.alpha :as s])
+            [clojure.spec.alpha :as s]
+            [atmos-kernel.spec :refer :all])
   (:import (java.security KeyStore)
            (java.security.cert CertificateFactory Certificate)))
 
