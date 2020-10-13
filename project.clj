@@ -9,10 +9,10 @@
                  ;pem
                  [xsc/pem-reader "0.1.1"]]
   :repositories [["releases" {:url           "https://clojars.org/repo"
-                              :username      :env/CLOJAR_USERNAME
-                              :password      :env/CLOJAR_PASSWORD
+                              :username      :env
+                              :password      :env
                               :sign-releases false}]
                  ["snapshots" {:url           "https://clojars.org/repo"
-                               :username      :env/CLOJAR_USERNAME
-                               :password      :env/CLOJAR_PASSWORD
+                               :username      :env
+                               :password      :env
                                :sign-releases false}]])
