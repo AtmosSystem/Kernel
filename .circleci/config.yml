@@ -61,7 +61,7 @@ jobs:
      # deploying to clojars
      - run: lein clean
      - run: lein jar
-     - run: lein deploy
+     - run: lein deploy clojars
 
 workflows:
   version: 2
