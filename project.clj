@@ -12,7 +12,7 @@
                               :username      :env/CLOJAR_USERNAME
                               :password      :env/CLOJAR_PASSWORD
                               :sign-releases false}]
-                 ["snapshot" {:url           "https://clojars.org/repo"
-                              :username      :env/CLOJAR_USERNAME
-                              :password      :env/CLOJAR_PASSWORD
-                              :sign-releases false}]])
+                 ["snapshots" {:url           "https://clojars.org/repo"
+                               :username      :env/CLOJAR_USERNAME
+                               :password      :env/CLOJAR_PASSWORD
+                               :sign-releases false}]])
