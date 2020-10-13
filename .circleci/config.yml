@@ -7,18 +7,11 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/clojure:lein-2.9.3
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
+      - image: circleci/clojure:lein
     working_directory: ~/repo
 
     environment:
       LEIN_ROOT: "true"
-      # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
     
     steps:
@@ -41,37 +34,8 @@ jobs:
       # run tests!
       - run: lein test
 
-  deploy:
-    docker:
-          # specify the version you desire here
-      - image: circleci/clojure:lein-2.9.3
-
-    working_directory: ~/repo
-
-    environment:
-      LEIN_ROOT: "true"
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
-
-    steps:
-     - checkout
-
-     - run: lein deps
-
-     # deploying to clojars
-     - run: lein clean
-     - run: lein jar
-     - run: lein deploy clojars
-
 workflows:
   version: 2
-  build_and_deploy:
+  build:
     jobs:
       - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - master
