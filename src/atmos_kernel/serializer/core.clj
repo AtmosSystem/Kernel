@@ -37,14 +37,14 @@
                 (if (s/valid? data-spec data-map-value)     ; Applying the spec against the value.
                   data-map-value                            ; If validation was success, return the data map value.
                   (throw-exception (s/explain-str data-spec data-map-value)
-                                   {:key serialized-data-key})))))) ; Throw an exception when the spec is not valid.
+                                   {:key serialized-data-key}))))))) ; Throw an exception when the spec is not valid.
 
-  (s/fdef de-vectorize-map*
-          :args (s/cat :data-map (s/map-of keyword? any?)
-                       :field (s/tuple keyword? (s/or :serialized-data-key keyword?
-                                                      :transform-fn fn?
-                                                      :serialized-data-key-with-spec (s/map-of keyword? fn?))))
-          :ret (s/tuple keyword? any?)))
+(s/fdef de-vectorize-map*
+        :args (s/cat :data-map (s/map-of keyword? any?)
+                     :field (s/map-of keyword? (s/or :serialized-data-key keyword?
+                                                     :transform-fn fn?
+                                                     :serialized-data-key-with-spec (s/map-of keyword? fn?))))
+        :ret (s/tuple keyword? any?))
 
 (extend-protocol EntitySerializationProtocol
   nil
