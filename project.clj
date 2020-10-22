@@ -7,12 +7,4 @@
                  ;configuration-deps
                  [aero "1.1.6"]
                  ;pem
-                 [xsc/pem-reader "0.1.1"]]
-  :repositories [["releases" {:url           "https://clojars.org/repo"
-                              :username      :env
-                              :password      :env
-                              :sign-releases false}]
-                 ["snapshots" {:url           "https://clojars.org/repo"
-                               :username      :env
-                               :password      :env
-                               :sign-releases false}]])
+                 [xsc/pem-reader "0.1.1"]])

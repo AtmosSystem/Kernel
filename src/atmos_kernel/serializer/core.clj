@@ -1,11 +1,20 @@
 (ns atmos-kernel.serializer.core
   (:require [atmos-kernel.core :refer [in? throw-exception]]
-            [clojure.spec.alpha :as s])
+            [clojure.spec.alpha :as s]
+            [clojure.repl :refer [doc]])
   (:import (java.util List Map)))
+
+(s/def ::serializer-map (s/map-of keyword? (s/or :no-serialized-data-key keyword?
+                                                 :transform-fn fn?)))
+
+(s/def ::de-serializer-map (s/map-of keyword? (s/or :serialized-data-key keyword?
+                                                    :transform-fn fn?
+                                                    :serialized-data-key-with-spec (s/map-of keyword? fn?))))
 
 (defprotocol EntitySerializationProtocol
   (serialize [data serializer-map] "Serialize data map using serializer map.")
   (de-serialize [data de-serialize-map] "De-serialize data map using a de-serializer map."))
+
 
 (defn vectorize-map*
   "Create a vector from a data map using new keys map field."
@@ -17,9 +26,12 @@
 
 (s/fdef vectorize-map*
         :args (s/cat :data-map (s/map-of keyword? any?)
-                     :field (s/tuple keyword? (s/or :no-serialized-data-key keyword?
-                                                    :transform-fn fn?)))
+                     :field ::serializer-map)
         :ret (s/tuple keyword? any?))
+
+(defn is-valid-serializer-map?
+  [serializer-map]
+  (if-not (s/valid? ::serializer-map serializer-map) (s/explain-str ::serializer-map serializer-map) true))
 
 (defn de-vectorize-map*
   "Create a vector from a data map using new keys map field."
@@ -39,12 +51,15 @@
                   (throw-exception (s/explain-str data-spec data-map-value)
                                    {:key serialized-data-key}))))))) ; Throw an exception when the spec is not valid.
 
+
 (s/fdef de-vectorize-map*
         :args (s/cat :data-map (s/map-of keyword? any?)
-                     :field (s/map-of keyword? (s/or :serialized-data-key keyword?
-                                                     :transform-fn fn?
-                                                     :serialized-data-key-with-spec (s/map-of keyword? fn?))))
+                     :field ::de-serializer-map)
         :ret (s/tuple keyword? any?))
+
+(defn is-valid-de-serializer-map?
+  [de-serializer-map]
+  (if-not (s/valid? ::de-serializer-map de-serializer-map) (s/explain-str ::de-serializer-map de-serializer-map) true))
 
 (extend-protocol EntitySerializationProtocol
   nil
