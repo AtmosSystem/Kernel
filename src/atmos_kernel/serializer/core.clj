@@ -1,7 +1,6 @@
 (ns atmos-kernel.serializer.core
-  (:require [atmos-kernel.core :refer [in? throw-exception]]
-            [clojure.spec.alpha :as s]
-            [clojure.repl :refer [doc]])
+  (:require [atmos-kernel.core :refer [throw-exception]]
+            [clojure.spec.alpha :as s])
   (:import (java.util List Map)))
 
 (s/def ::serializer-map (s/map-of keyword? (s/or :no-serialized-data-key keyword?
