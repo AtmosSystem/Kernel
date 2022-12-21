@@ -3,12 +3,13 @@
             [clojure.spec.alpha :as s])
   (:import (java.util List Map)))
 
-(s/def ::serializer-map (s/map-of keyword? (s/or :no-serialized-data-key keyword?
-                                                 :transform-fn fn?)))
 
-(s/def ::de-serializer-map (s/map-of keyword? (s/or :serialized-data-key keyword?
-                                                    :transform-fn fn?
-                                                    :serialized-data-key-with-spec (s/map-of keyword? fn?))))
+(s/def ::transformation-functions (s/map-of keyword? fn?))
+(s/def ::data-spec keyword?)
+(s/def ::serializer-map ::transformation-functions)
+(s/def ::fields ::transformation-functions)
+(s/def ::de-serializer-map (s/keys :req-un [::data-spec]
+                                   :opt-un [::fields]))
 
 (defprotocol EntitySerializationProtocol
   (serialize [data serializer-map] "Serialize data map using serializer map.")
@@ -18,14 +19,14 @@
 (defn vectorize-map*
   "Create a vector from a data map using new keys map field."
   [data-map field]
-  (let [[new-key no-serialized-data-key-or-fn] field]
+  (let [[new-key transform-fn] field]
     (vector new-key
-            (if (or (keyword? no-serialized-data-key-or-fn) (fn? no-serialized-data-key-or-fn))
-              (no-serialized-data-key-or-fn data-map)))))   ; Vectorize the new key with the value of data map.
+            (if (fn? transform-fn)
+              (transform-fn data-map)))))                   ; Vectorize the new key with the value of data map.
 
 (s/fdef vectorize-map*
         :args (s/cat :data-map (s/map-of keyword? any?)
-                     :field ::serializer-map)
+                     :field (s/cat :new-key keyword? :transform-fn fn?))
         :ret (s/tuple keyword? any?))
 
 (defn is-valid-serializer-map?
@@ -35,25 +36,15 @@
 (defn de-vectorize-map*
   "Create a vector from a data map using new keys map field."
   [data-map field]
-  (let [[new-key serialized-data-key-or-with-spec] field]
+  (let [[new-key transform-fn] field]
     (vector new-key
-            (cond
-              (or (keyword? serialized-data-key-or-with-spec) (fn? serialized-data-key-or-with-spec))
-              (serialized-data-key-or-with-spec data-map)   ; Return the value from data map applying the transform fn or using keyword.
-
-              (map? serialized-data-key-or-with-spec)
-              (let [[serialized-data-key data-spec] (-> serialized-data-key-or-with-spec vec first) ; Getting the data map key and spec.
-                    data-map-value (serialized-data-key data-map)]
-
-                (if (s/valid? data-spec data-map-value)     ; Applying the spec against the value.
-                  data-map-value                            ; If validation was success, return the data map value.
-                  (throw-exception (s/explain-str data-spec data-map-value)
-                                   {:key serialized-data-key}))))))) ; Throw an exception when the spec is not valid.
+            (if (fn? transform-fn)
+              (transform-fn data-map)))))                   ; Return the value from data map applying the transform fn or using keyword.
 
 
 (s/fdef de-vectorize-map*
         :args (s/cat :data-map (s/map-of keyword? any?)
-                     :field ::de-serializer-map)
+                     :field (s/cat :new-key keyword? :transform-fn fn?))
         :ret (s/tuple keyword? any?))
 
 (defn is-valid-de-serializer-map?
@@ -65,18 +56,18 @@
   (serialize [_ _] nil)
   (de-serialize [_ _] nil)
   Map
-  (serialize [data serializer-map] (let [data (map (fn [field] (vectorize-map* data field)) serializer-map)]
-                                     (into {} data)))
+  (serialize [data serializer-map] (let [result-data (map (fn [field] (vectorize-map* data field)) serializer-map)]
+                                     (merge data (into {} result-data))))
 
-  (de-serialize [data de-serializer-map] (let [{:keys [data-spec fields] :or {data-spec false}} de-serializer-map
-                                               result-data (map (fn [field] (de-vectorize-map* data field)) fields)
-                                               result-data-map (into {} result-data)]
+  (de-serialize [data de-serializer-map] (let [{:keys [data-spec fields] :or {data-spec false fields false}} de-serializer-map
+                                               result-data (if fields (map (fn [field] (de-vectorize-map* data field)) fields))
+                                               data (if result-data (merge data (into {} result-data)) data)]
 
-                                           (if data-spec
+                                           (if (and data-spec (is-valid-de-serializer-map? de-serializer-map))
                                              (if (s/valid? data-spec data)
-                                               result-data-map
+                                               data
                                                (throw-exception (s/explain-str data-spec data)))
-                                             result-data-map)))
+                                             data)))
   List
   (serialize [data serializer-map] (map (fn [record] (serialize record serializer-map)) data))
   (de-serialize [data de-serializer-map] (map (fn [record] (de-serialize record de-serializer-map)) data)))
