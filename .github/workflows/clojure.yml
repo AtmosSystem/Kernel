@@ -20,9 +20,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        run: lein install
 
-      - uses: jlesquembre/clojars-publish-action@master
+      - uses: jlesquembre/clojars-publish-action@0.1
         env:
           CLOJARS_USERNAME: ${{secrets.CLOJARS_USERNAME}}
           CLOJARS_PASSWORD: ${{secrets.CLOJARS_PASSWORD}}
+
 
