@@ -3,6 +3,7 @@
 
 # Kernel
 
+[![Clojars Project](https://img.shields.io/clojars/v/org.clojars.atmos-system/atmos-kernel.svg)](https://clojars.org/org.clojars.atmos-system/atmos-kernel)
 [![Downloads](https://versions.deps.co/AtmosSystem/Kernel/downloads.svg)](https://versions.deps.co/AtmosSystem/Kernel)
 [![Dependencies Status](https://versions.deps.co/AtmosSystem/Kernel/status.svg)](https://versions.deps.co/AtmosSystem/Kernel)
 
