@@ -20,6 +20,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Install library
         run: lein install
 
       - uses: jlesquembre/clojars-publish-action@0.1
