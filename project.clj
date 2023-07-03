@@ -1,4 +1,4 @@
-(defproject atmos-system/atmos-kernel "2.2-SNAPSHOT"
+(defproject org.clojars.atmos-system/atmos-kernel "2.2-SNAPSHOT"
   :description "Core of Atmos System"
   :url "https://github.com/AtmosSystem/Kernel"
   :license {:name "Eclipse Public License"
