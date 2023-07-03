@@ -2,33 +2,26 @@ name: Atmos Kernel CI
 
 on:
   push:
-    branches: ["master"]
+    branches: [ "master" ]
   pull_request:
-    branches: ["master"]
+    branches: [ "master" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Install dependencies
-      run: lein deps
-      
-    - name: Publish to clojars
-      uses: jlesquembre/clojars-publish-action@0.1
-      env:
-          CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
-          CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
-          
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: lein deps
+
   deploy:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Publish to clojars
-        uses: jlesquembre/clojars-publish-action@master
+
+      - uses: jlesquembre/clojars-publish-action@master
         env:
           CLOJARS_USERNAME: ${{secrets.CLOJARS_USERNAME}}
           CLOJARS_PASSWORD: ${{secrets.CLOJARS_PASSWORD}}
