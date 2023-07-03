@@ -1,9 +1,9 @@
-[![CircleCI](https://circleci.com/gh/AtmosSystem/Kernel.svg?style=svg)](https://circleci.com/gh/AtmosSystem/Kernel)
+[![Atmos Kernel CI](https://github.com/AtmosSystem/Kernel/actions/workflows/clojure.yml/badge.svg)](https://github.com/AtmosSystem/Kernel/actions/workflows/clojure.yml)
 
 
 # Kernel
 
-[![Clojars Project](https://img.shields.io/clojars/v/atmos-kernel.svg)](https://clojars.org/atmos-kernel)
+[![Clojars Project](https://img.shields.io/clojars/v/org.clojars.atmos-system/atmos-kernel.svg)](https://clojars.org/org.clojars.atmos-system/atmos-kernel)
 [![Downloads](https://versions.deps.co/AtmosSystem/Kernel/downloads.svg)](https://versions.deps.co/AtmosSystem/Kernel)
 [![Dependencies Status](https://versions.deps.co/AtmosSystem/Kernel/status.svg)](https://versions.deps.co/AtmosSystem/Kernel)
 
