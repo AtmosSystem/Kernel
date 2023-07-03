@@ -20,4 +20,16 @@ jobs:
       env:
           CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
           CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
+          
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Publish to clojars
+        uses: jlesquembre/clojars-publish-action@master
+        env:
+          CLOJARS_USERNAME: ${{secrets.CLOJARS_USERNAME}}
+          CLOJARS_PASSWORD: ${{secrets.CLOJARS_PASSWORD}}
 
