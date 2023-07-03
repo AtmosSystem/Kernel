@@ -19,13 +19,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Install library
-        run: lein install
-
-      - uses: jlesquembre/clojars-publish-action@0.1
+      - name: Deploy library
         env:
-          CLOJARS_USERNAME: ${{secrets.CLOJARS_USERNAME}}
-          CLOJARS_PASSWORD: ${{secrets.CLOJARS_PASSWORD}}
+          GITHUB_USERNAME: ${{secrets.GH_USERNAME}}
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+
+        run: lein deploy github
 
 
