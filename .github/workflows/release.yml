@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
       - name: Deploy library
         env:
           GITHUB_USERNAME: ${{secrets.GH_USERNAME}}
