@@ -1,4 +1,4 @@
-name: Atmos Kernel CI
+name: CI
 
 on:
   push:
