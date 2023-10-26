@@ -1,4 +1,4 @@
-(defproject org.clojars.atmos-system/atmos-kernel "2.2-SNAPSHOT"
+(defproject org.clojars.atmos-system/atmos-kernel "2.2"
   :description "Core of Atmos System"
   :url "https://github.com/AtmosSystem/Kernel"
   :license {:name "Eclipse Public License"
@@ -8,6 +8,7 @@
                  [aero "1.1.6"]
                  ;pem
                  [xsc/pem-reader "0.1.1"]]
-  :deploy-repositories [["clojars" {:url      "https://repo.clojars.org/"
+  :deploy-repositories [["clojars" {:sign-releases false
+                                    :url      "https://repo.clojars.org/"
                                     :username :env/clojars_username
                                     :password :env/clojars_password}]])
